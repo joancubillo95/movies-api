@@ -1,0 +1,2 @@
+### Get all movies
+GET http://localhost:8080/movies
