@@ -1,0 +1,28 @@
+{
+  "name": "movies-api",
+  "version": "0.1.0",
+  "description": "A Node.js REST API for managing movies, built as a practice project to connect with **Azure SQL Database** and to experiment with **Docker** and **Kubernetes** deployments.",
+  "keywords": [
+    "api",
+    "nodejs",
+    "docker",
+    "kubernetes",
+    "azure",
+    "sql"
+  ],
+  "homepage": "https://github.com/joancubillo95/movies-api#readme",
+  "bugs": {
+    "url": "https://github.com/joancubillo95/movies-api/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/joancubillo95/movies-api.git"
+  },
+  "license": "MIT",
+  "author": "Joan Cubillo",
+  "type": "module",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
