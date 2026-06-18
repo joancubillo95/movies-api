@@ -34,8 +34,19 @@ This extension is intended for practice with **nodejs**, **Azure SQL Database**,
 
 ## ⚙️ Setup
 
-### 1. Clone the repo
+### 1. Clone the repo and install dependencies
 ```bash
 git clone https://github.com/yourusername/movies-api.git
 cd movies-api
+npm install
+```
 
+---
+
+## ▶️ Run Locally
+
+After cloning and installing dependencies, you can start the API server:
+
+```bash
+npm run start
+```
