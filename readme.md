@@ -7,7 +7,7 @@ A Node.js REST API for managing movies, built as a practice project to connect w
 ## 🙏 Credits & References
 
 This project is based on the original work by Miguel Ángel Durán.  
-You can find the source project here: [\[link to original repository\]](https://github.com/midudev/curso-node-js).
+You can find the source project here: [\[curso node by midudev\]](https://github.com/midudev/curso-node-js).
 
 This extension is intended for practice with **nodejs**, **Azure SQL Database**, **Docker**, and **Kubernetes**.
 
