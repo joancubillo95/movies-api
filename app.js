@@ -2,6 +2,7 @@ import express, { json } from "express"
 import { createMovieRouter } from "./routes/movies.router.js"
 import { MoviesModel } from "./models/movies.model.js"
 import 'dotenv/config'
+import { createHealthRouter } from "./routes/health.router.js"
 
 const CreateApp = ({ movieModel }) => {
     const app = express()
@@ -9,6 +10,7 @@ const CreateApp = ({ movieModel }) => {
     app.disable("x-powered-by")
 
     app.use("/movies", createMovieRouter({ movieModel }))
+    app.use("/", createHealthRouter())
 
     const PORT = process.env.PORT ?? 8080
 
