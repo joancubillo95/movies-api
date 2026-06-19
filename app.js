@@ -3,7 +3,7 @@ import { createMovieRouter } from "./routes/movies.router.js"
 import { MoviesModel } from "./models/movies.model.js"
 import 'dotenv/config'
 import { createHealthRouter } from "./routes/health.router.js"
-import { limiter } from "./middlewares/loginLimiter.js"
+import { limiter } from "./middlewares/trafficLimiter.js"
 
 const CreateApp = ({ movieModel }) => {
     const app = express()
