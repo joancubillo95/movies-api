@@ -6,7 +6,7 @@ export const createMovieRouter = ({ movieModel }) => {
 
     const movieController = new MoviesController({ movieModel })
 
-    moviesRouter.get('/', movieController.sayHello)
+    moviesRouter.get('/', movieController.getAll)
 
     return moviesRouter
 }

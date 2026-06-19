@@ -3,7 +3,8 @@ export class MoviesController {
         this.movieModel = movieModel
     }
 
-    sayHello = async (req, res) => {
-        res.json({ message: "Hello World!" })
+    getAll = async (req, res) => {
+        const movies = await this.movieModel.getAll()
+        res.json(movies)
     }
 }
