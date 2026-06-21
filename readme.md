@@ -50,3 +50,26 @@ After cloning and installing dependencies, you can start the API server:
 ```bash
 npm run start
 ```
+
+## 🐳 Run with Docker
+
+If you have Docker installed, you can build and run the API inside a container:
+
+### Build the image
+```bash
+docker build -t movies-api .
+docker run -d -p 8080:8080 --name movies-api movies-api
+```
+
+### Check http://localhost:8080
+
+### Stop and remove container
+```bash
+docker stop movies-api
+docker rm movies-api
+```
+
+### Remove image
+```bash
+docker rmi movies-api
+```
