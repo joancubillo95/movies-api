@@ -64,8 +64,12 @@ docker run -d -p 8080:8080 --name movies-api movies-api
 ### Check http://localhost:8080
 
 ### Stop and remove container
+```bash
 docker stop movies-api
 docker rm movies-api
+```
 
-### Remove the image
+### Remove image
+```bash
 docker rmi movies-api
+```
