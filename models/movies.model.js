@@ -1,3 +1,4 @@
+import sql from "mssql"
 import { poolConnect, query } from "../db/connection.js"
 
 export class MoviesModel {
@@ -18,12 +19,15 @@ export class MoviesModel {
             duration,
             rate,
             poster,
-            genreInput: genre
+            genre: genreInput
         } = input
+        const transac = new sql.Transaction(poolConnect)
+        await transac.begin()
         try {
-            const newIdResult = await poolConnect.request().query("SELECT NEWID() ID")
+            const newIdResult = await transac.request().query("SELECT NEWID() ID")
             const [{ ID: newId }] = newIdResult.recordset
-            await poolConnect.request()
+
+            await transac.request()
                 .input("Id", newId)
                 .input("Title", title)
                 .input("Year", year)
@@ -34,12 +38,23 @@ export class MoviesModel {
                 .query("INSERT INTO MOVIE (ID, TITLE, YEAR, DIRECTOR, DURATION, RATE, POSTER)"
                     + " VALUES(@Id, @title, @year, @director, @duration, @rate, @poster)")
 
-            const newMovie = await poolConnect.request()
+            for (const genre of genreInput) {
+                const lowerGenre = genre.toLowerCase()
+                await transac
+                    .request()
+                    .input("MovieId", newId)
+                    .input("Genre", lowerGenre)
+                    .query("INSERT INTO MOVIE_GENRES (MOVIE_ID, GENRE_ID) VALUES (@MovieId, (SELECT ID FROM GENRE WHERE LOWER(NAME) = @Genre))")
+            }
+
+            const newMovie = await transac.request()
                 .input("Id", newId)
                 .query("SELECT * FROM MOVIE WHERE ID = @Id")
 
+            await transac.commit()
             return newMovie.recordset
         } catch (error) {
+            await transac.rollback()
             console.log(error)
             throw new Error(error)
         }

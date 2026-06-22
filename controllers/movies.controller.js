@@ -11,10 +11,8 @@ export class MoviesController {
     }
 
     create = async (req, res) => {
-        console.log("Calling to create movie")
         const result = validateMovie(req.body)
 
-        console.log(JSON.stringify(result.data))
         if (!result.success) {
             return res.status(400).json({ error: JSON.parse(result.error.message) })
         }
