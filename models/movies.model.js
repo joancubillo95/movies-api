@@ -44,4 +44,18 @@ export class MoviesModel {
             throw new Error(error)
         }
     }
+
+    static delete = async ({ id }) => {
+        try {
+            const result = await poolConnect
+                .request()
+                .input("Id", id)
+                .query("DELETE FROM MOVIE WHERE ID = @Id")
+            const [rowsAffected] = result.rowsAffected
+            return rowsAffected
+        } catch (error) {
+            console.log(error)
+            throw new Error(error)
+        }
+    }
 }

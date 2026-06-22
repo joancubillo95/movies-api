@@ -23,4 +23,13 @@ export class MoviesController {
 
         return res.status(201).json(newMovie)
     }
+
+    delete = async (req, res) => {
+        const { id } = req.params
+        const rowsAffected = await this.movieModel.delete({ id })
+        if (rowsAffected == 0) {
+            return res.status(404).json({ "message": "Movie not found!" })
+        }
+        return res.json({ "message": "Movie deleted!" })
+    }
 }
