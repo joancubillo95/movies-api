@@ -19,9 +19,13 @@ const config = {
 const pool = new sql.ConnectionPool(config)
 const poolConnect = await pool.connect()
 
+const createTransaction = async () => {
+    return await new sql.Transaction(poolConnect)
+}
+
 const query = async (sqlString) => {
     const result = await poolConnect.request().query(sqlString)
     return result.recordset
 }
 
-export { poolConnect, query }
+export { poolConnect, query, createTransaction }

@@ -1,10 +1,14 @@
-import sql from "mssql"
-import { poolConnect, query } from "../db/connection.js"
+import { createTransaction, poolConnect, query } from "../db/connection.js"
 
 export class MoviesModel {
     static getAll = async () => {
         try {
-            return await query("SELECT * FROM MOVIE")
+            const movies = await query("SELECT * FROM VW_MOVIES_WITH_GENRES")
+            movies.map(movie => ({
+                ...movie,
+                GENRES: movie.GENRES.split(",")
+            }));
+            return movies
         } catch (error) {
             console.log(error)
             throw new Error(error)
@@ -21,7 +25,7 @@ export class MoviesModel {
             poster,
             genre: genreInput
         } = input
-        const transac = new sql.Transaction(poolConnect)
+        const transac = await createTransaction()
         await transac.begin()
         try {
             const newIdResult = await transac.request().query("SELECT NEWID() ID")
@@ -47,12 +51,13 @@ export class MoviesModel {
                     .query("INSERT INTO MOVIE_GENRES (MOVIE_ID, GENRE_ID) VALUES (@MovieId, (SELECT ID FROM GENRE WHERE LOWER(NAME) = @Genre))")
             }
 
-            const newMovie = await transac.request()
+            let newMovie = await transac.request()
                 .input("Id", newId)
                 .query("SELECT * FROM MOVIE WHERE ID = @Id")
 
             await transac.commit()
-            return newMovie.recordset
+            newMovie = { ...newMovie.recordset[0], GENRE: genreInput }
+            return newMovie
         } catch (error) {
             await transac.rollback()
             console.log(error)
