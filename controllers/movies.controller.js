@@ -1,4 +1,4 @@
-import { validateMovie } from "../schemas/movies.schema.js"
+import { validateMovie, validatePartialMovie } from "../schemas/movies.schema.js"
 
 export class MoviesController {
     constructor({ movieModel }) {
@@ -20,6 +20,18 @@ export class MoviesController {
         const newMovie = await this.movieModel.create({ input: result.data })
 
         return res.status(201).json(newMovie)
+    }
+
+    patch = async (req, res) => {
+        const { id } = req.params
+        const result = validatePartialMovie(req.body)
+
+        if (!result.success) {
+            return res.status(400).json({ error: JSON.parse(result.error.message) })
+        }
+
+        await this.movieModel.update({ id, input: result.data })
+        return res.json({ message: "Movie updated!" })
     }
 
     delete = async (req, res) => {

@@ -9,6 +9,7 @@ export const createMovieRouter = ({ movieModel }) => {
     moviesRouter.get("/", movieController.getAll)
     moviesRouter.post("/", movieController.create)
     moviesRouter.delete("/:id", movieController.delete)
+    moviesRouter.patch("/:id", movieController.patch)
 
     return moviesRouter
 }
