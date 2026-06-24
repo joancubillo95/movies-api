@@ -1,6 +1,6 @@
 {
   "name": "movies-api",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "A Node.js REST API for managing movies, built as a practice project to connect with **Azure SQL Database** and to experiment with **Docker** and **Kubernetes** deployments.",
   "keywords": [
     "api",
