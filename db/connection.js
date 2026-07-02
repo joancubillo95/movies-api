@@ -8,6 +8,7 @@ const config = {
     database: process.env.DB_DATABASE,
     options: {
         encrypt: true,
+        trustServerCertificate: true
     },
     pool: {
         max: 2,
@@ -16,8 +17,8 @@ const config = {
     }
 };
 
-const pool = new sql.ConnectionPool(config)
-const poolConnect = await pool.connect()
+const pool = new sql.ConnectionPool(config);
+const poolConnect = await pool.connect();
 
 const createTransaction = async () => {
     return await new sql.Transaction(poolConnect)
