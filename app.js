@@ -4,6 +4,7 @@ import { MoviesModel } from "./models/movies.model.js"
 import 'dotenv/config'
 import { createHealthRouter } from "./routes/health.router.js"
 import { limiter } from "./middlewares/trafficLimiter.js"
+import { errorHandler } from "./middlewares/errorHandler.js"
 
 const CreateApp = ({ movieModel }) => {
     const app = express()
@@ -13,7 +14,7 @@ const CreateApp = ({ movieModel }) => {
 
     app.use("/movies", createMovieRouter({ movieModel }))
     app.use("/", createHealthRouter())
-
+    app.use(errorHandler)
     const PORT = process.env.PORT ?? 8080
 
     app.listen(PORT, () => {

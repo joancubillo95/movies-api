@@ -1,5 +1,6 @@
 import sql from "mssql"
 import { createTransaction, poolConnect, query } from "../db/connection.js"
+import { AppError } from "../utils/appError.js";
 
 export class MoviesModel {
     static getAll = async () => {
@@ -62,7 +63,7 @@ export class MoviesModel {
         } catch (error) {
             await transac.rollback()
             console.log(error)
-            throw new Error(error)
+            throw new AppError("customMessage", 400, { detail: error.message, source: "db" })
         }
     }
 
