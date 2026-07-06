@@ -1,13 +1,12 @@
 export class AppError extends Error {
-    constructor(message, statusCode, options = {}) {
+    constructor(message, statusCode, originalError, options = {}) {
         super(message)
         this.statusCode = statusCode
-        this.isOperational = true
+        this.originalError = originalError
 
-        //Optional info for db errors
         this.code = options.code || null
         this.detail = options.detail || null
-        this.source = options.source || 'app' //default from app if not specified
+        this.origin = options.origin || "app"
 
         Error.captureStackTrace(this, this.constructor)
     }

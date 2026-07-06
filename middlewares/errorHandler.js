@@ -1,3 +1,4 @@
+import { json } from "zod";
 import { AppError } from "../utils/appError.js";
 
 export function errorHandler(
@@ -9,8 +10,8 @@ export function errorHandler(
 
   if (err instanceof AppError) {
     return res.status(err.statusCode).json({
-      error: "Generic error",
-      details: err.detail
+      details: err.detail,
+      source: err.source
     })
   }
 
