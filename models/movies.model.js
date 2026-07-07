@@ -7,14 +7,18 @@ import sql from "mssql"
 export class MoviesModel {
     static getAll = async () => {
         try {
-            const movies = await query("SELECT * FROM VW_MOVIES_WITH_GENRES")
-            movies.map(movie => ({
+            let movies = await query("SELECT * FROM VW_MOVIES_WITH_GENRES")
+            movies = movies.map(movie => ({
                 ...movie,
-                GENRES: movie.GENRES.split(",")
+                GENRES: movie.GENRES.split(", ")
             }));
             return movies
         } catch (error) {
-            throw new AppError("", 400, error, { origin: "db" })
+            if (error.code === "EREQUEST") {
+                throw new DbError(error)
+            } else {
+                throw new AppError("Unexpected error", 500, error)
+            }
         }
     }
 
@@ -134,8 +138,11 @@ export class MoviesModel {
             await transaction.commit()
         } catch (error) {
             await transaction.rollback()
-            console.log(error)
-            throw new Error(error)
+            if (error.code === "EREQUEST") {
+                throw new DbError(error)
+            } else {
+                throw new AppError("Unexpected error", 500, error)
+            }
         }
     }
 
@@ -148,8 +155,11 @@ export class MoviesModel {
             const [rowsAffected] = result.rowsAffected
             return rowsAffected
         } catch (error) {
-            console.log(error)
-            throw new Error(error)
+            if (error.code === "EREQUEST") {
+                throw new DbError(error)
+            } else {
+                throw new AppError("Unexpected error", 500, error)
+            }
         }
     }
 }
