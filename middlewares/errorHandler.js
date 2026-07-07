@@ -1,5 +1,5 @@
-import { json } from "zod";
 import { AppError } from "../utils/appError.js";
+import { ENV } from "../config/env.js";
 
 export function errorHandler(
   err,
@@ -7,18 +7,20 @@ export function errorHandler(
   res,
   next
 ) {
-
-  if (err instanceof AppError) {
+  if (ENV === "development") {
+    // console.info("Stack trace: " + err.stack)
+    console.error(JSON.stringify(err.originalError))
     return res.status(err.statusCode).json({
-      details: err.detail,
-      source: err.source
+      message: err.message,
+      originalError: err.originalError
     })
+  } else {
+    if (err.isOperational) {
+      res.status(err.statusCode).json({ message: err.message })
+    } else {
+      res.status(500).json({
+        error: "Internal Server Error",
+      });
+    }
   }
-
-
-  // Default fallback
-  res.status(500).json({
-    error: "Internal Server Error",
-    details: err.message,
-  });
 }

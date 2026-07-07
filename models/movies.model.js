@@ -1,6 +1,8 @@
-import sql from "mssql"
 import { createTransaction, poolConnect, query } from "../db/connection.js"
+
 import { AppError } from "../utils/appError.js";
+import { DbError } from "../utils/dbError.js";
+import sql from "mssql"
 
 export class MoviesModel {
     static getAll = async () => {
@@ -12,8 +14,7 @@ export class MoviesModel {
             }));
             return movies
         } catch (error) {
-            console.log(error)
-            throw new Error(error)
+            throw new AppError("", 400, error, { origin: "db" })
         }
     }
 
@@ -35,7 +36,7 @@ export class MoviesModel {
 
             await transac.request()
                 .input("Id", newId)
-                .input("Title", title)
+                .input("Title", null)
                 .input("Year", year)
                 .input("Director", director)
                 .input("Duration", duration)
@@ -62,8 +63,12 @@ export class MoviesModel {
             return newMovie
         } catch (error) {
             await transac.rollback()
-            console.log(error)
-            throw new AppError("customMessage", 400, { detail: error.message, source: "db" })
+            if (error.code === "EREQUEST") {
+                throw new DbError(error)
+            } else {
+                throw new AppError("Unexpected error", 500, error)
+            }
+
         }
     }
 
