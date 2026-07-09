@@ -1,4 +1,5 @@
 import "dotenv/config";
+
 import sql from 'mssql';
 
 const config = {
@@ -8,6 +9,7 @@ const config = {
     database: process.env.DB_DATABASE,
     options: {
         encrypt: true,
+        trustServerCertificate: true
     },
     pool: {
         max: 2,
