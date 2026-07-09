@@ -40,7 +40,7 @@ export class MoviesModel {
 
             await transac.request()
                 .input("Id", newId)
-                .input("Title", null)
+                .input("Title", title)
                 .input("Year", year)
                 .input("Director", director)
                 .input("Duration", duration)

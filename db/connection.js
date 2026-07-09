@@ -1,4 +1,5 @@
 import "dotenv/config";
+
 import sql from 'mssql';
 
 const config = {
@@ -17,8 +18,8 @@ const config = {
     }
 };
 
-const pool = new sql.ConnectionPool(config);
-const poolConnect = await pool.connect();
+const pool = new sql.ConnectionPool(config)
+const poolConnect = await pool.connect()
 
 const createTransaction = async () => {
     return await new sql.Transaction(poolConnect)
