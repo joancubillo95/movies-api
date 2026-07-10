@@ -1,6 +1,6 @@
 {
   "name": "movies-api",
-  "version": "0.2.0",
+  "version": "0.3.2",
   "description": "A Node.js REST API for managing movies, built as a practice project to connect with **Azure SQL Database** and to experiment with **Docker** and **Kubernetes** deployments.",
   "keywords": [
     "api",
@@ -21,10 +21,10 @@
   "license": "MIT",
   "author": "Joan Cubillo",
   "type": "module",
-  "main": "app.js",
+  "main": "src/app.js",
   "scripts": {
-    "dev": "nodemon app.js",
-    "start": "node app.js",
+    "dev": "nodemon src/app.js",
+    "start": "node src/app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {

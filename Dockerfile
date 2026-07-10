@@ -5,7 +5,8 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install --production
 
-COPY . .
+COPY src ./src
+COPY .env ./.env
 
 EXPOSE 8080
-CMD ["node", "app.js"]
+CMD ["npm", "start"]
