@@ -10,7 +10,7 @@ export class MoviesModel {
             let movies = await query("SELECT * FROM VW_MOVIES_WITH_GENRES")
             movies = movies.map(movie => ({
                 ...movie,
-                GENRES: movie.GENRES.split(", ")
+                GENRES: movie.GENRES.split(",")
             }));
             return movies
         } catch (error) {
