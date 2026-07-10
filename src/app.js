@@ -2,13 +2,15 @@ import "dotenv/config"
 
 import express, { json } from "express"
 
-import { MoviesModel } from "./models/movies.model.js"
+import { MovieService } from "./services/movies.service.js"
 import { PORT } from "./config/env.js"
 import { createHealthRouter } from "./routes/health.router.js"
 import { createMovieRouter } from "./routes/movies.router.js"
 import { errorHandler } from "./middlewares/errorHandler.js"
 import { limiter } from "./middlewares/trafficLimiter.js"
 import { validateApiKey } from "./middlewares/validateApiKey.js"
+
+// import { MoviesModel } from "./models/movies.model.js"
 
 const CreateApp = ({ movieModel }) => {
     const app = express()
@@ -25,4 +27,5 @@ const CreateApp = ({ movieModel }) => {
     })
 }
 
-CreateApp({ movieModel: MoviesModel })
+//CreateApp({ movieModel: MoviesModel })
+CreateApp({ movieModel: MovieService })
