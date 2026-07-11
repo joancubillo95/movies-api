@@ -1,4 +1,4 @@
-import { createTransaction, poolConnect, query } from "../config/connection.js"
+import { createTransaction, poolConnect, query } from "../config/mssqlConnection.js"
 
 import { AppError } from "../utils/appError.js";
 import { DbError } from "../utils/dbError.js";
