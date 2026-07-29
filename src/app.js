@@ -9,13 +9,13 @@ import { errorHandler } from "./middlewares/errorHandler.js"
 import { limiter } from "./middlewares/trafficLimiter.js"
 import { validateApiKey } from "./middlewares/validateApiKey.js"
 
-export const CreateApp = ({ movieModel }) => {
+export const CreateApp = ({ moviesRepository }) => {
     const app = express()
     app.disable("x-powered-by")
         .use(json())
         .use(limiter)
         .use(validateApiKey)
-        .use("/movies", createMovieRouter({ movieModel }))
+        .use("/movies", createMovieRouter({ moviesRepository }))
         .use("/", createHealthRouter())
         .use(errorHandler)
 

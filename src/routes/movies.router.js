@@ -1,10 +1,10 @@
-import { Router } from "express"
 import { MoviesController } from "../controllers/movies.controller.js"
+import { Router } from "express"
 
-export const createMovieRouter = ({ movieModel }) => {
+export const createMovieRouter = ({ moviesRepository }) => {
     const moviesRouter = Router()
 
-    const movieController = new MoviesController({ movieModel })
+    const movieController = new MoviesController({ moviesRepository })
 
     moviesRouter.get("/", movieController.getAll)
     moviesRouter.post("/", movieController.create)
