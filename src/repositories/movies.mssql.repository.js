@@ -4,7 +4,7 @@ import { AppError } from "../utils/appError.js";
 import { DbError } from "../utils/dbError.js";
 import sql from "mssql"
 
-export class MoviesModel {
+export class MoviesRepository {
     static getAll = async () => {
         try {
             let movies = await query("SELECT * FROM VW_MOVIES_WITH_GENRES")
