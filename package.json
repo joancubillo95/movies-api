@@ -23,9 +23,9 @@
   "type": "module",
   "main": "src/app.js",
   "scripts": {
-    "dev:mssql": "nodemon src/mssqlServer.js",
-    "dev:pg": "nodemon src/pgServer.js",
-    "start": "node src/pgServer.js",
+    "dev:mssql": "nodemon src/server/mssqlServer.js",
+    "dev:pg": "nodemon src/server/pgServer.js",
+    "start": "node src/server/pgServer.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {

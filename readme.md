@@ -159,11 +159,17 @@ The server starts at `http://localhost:<PORT>` (default port `3000`).
 
 ## Docker
 
-Build and run the container:
+The image does not bundle secrets. Pass configuration at runtime via environment variables or an env file:
 
 ```bash
 docker build -t movies-api .
 docker run -d -p 8080:8080 --env-file .env --name movies-api movies-api
+```
+
+The container defaults to `PORT=8080` and runs the PostgreSQL entry point. Override either as needed:
+
+```bash
+docker run -d -p 3000:3000 -e PORT=3000 --env-file .env --name movies-api movies-api
 ```
 
 Stop and remove:
