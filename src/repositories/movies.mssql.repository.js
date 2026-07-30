@@ -1,18 +1,24 @@
-import sql from "mssql"
-import { createTransaction, poolConnect, query } from "../db/connection.js"
+import { createTransaction, poolConnect, query } from "../config/mssqlConnection.js"
 
-export class MoviesModel {
+import { AppError } from "../utils/appError.js";
+import { DbError } from "../utils/dbError.js";
+import sql from "mssql"
+
+export class MoviesRepository {
     static getAll = async () => {
         try {
-            const movies = await query("SELECT * FROM VW_MOVIES_WITH_GENRES")
-            movies.map(movie => ({
+            let movies = await query("SELECT * FROM VW_MOVIES_WITH_GENRES")
+            movies = movies.map(movie => ({
                 ...movie,
-                GENRES: movie.GENRES.split(",")
+                GENRE: movie.GENRE.split(",")
             }));
             return movies
         } catch (error) {
-            console.log(error)
-            throw new Error(error)
+            if (error.code === "EREQUEST") {
+                throw new DbError(error)
+            } else {
+                throw new AppError("Unexpected error", 500, error)
+            }
         }
     }
 
@@ -61,8 +67,12 @@ export class MoviesModel {
             return newMovie
         } catch (error) {
             await transac.rollback()
-            console.log(error)
-            throw new Error(error)
+            if (error.code === "EREQUEST") {
+                throw new DbError(error)
+            } else {
+                throw new AppError("Unexpected error", 500, error)
+            }
+
         }
     }
 
@@ -128,8 +138,11 @@ export class MoviesModel {
             await transaction.commit()
         } catch (error) {
             await transaction.rollback()
-            console.log(error)
-            throw new Error(error)
+            if (error.code === "EREQUEST") {
+                throw new DbError(error)
+            } else {
+                throw new AppError("Unexpected error", 500, error)
+            }
         }
     }
 
@@ -142,8 +155,11 @@ export class MoviesModel {
             const [rowsAffected] = result.rowsAffected
             return rowsAffected
         } catch (error) {
-            console.log(error)
-            throw new Error(error)
+            if (error.code === "EREQUEST") {
+                throw new DbError(error)
+            } else {
+                throw new AppError("Unexpected error", 500, error)
+            }
         }
     }
 }
