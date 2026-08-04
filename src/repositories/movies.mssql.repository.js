@@ -1,13 +1,15 @@
-import { createTransaction, poolConnect, query } from "../config/mssqlConnection.js"
-
 import { AppError } from "../utils/appError.js";
 import { DbError } from "../utils/dbError.js";
 import sql from "mssql"
 
 export class MoviesRepository {
-    static getAll = async () => {
+    constructor(database) {
+        this.database = database
+    }
+    getAll = async () => {
         try {
-            let movies = await query("SELECT * FROM VW_MOVIES_WITH_GENRES")
+            const pool = await this.database.getPool()
+            let movies = (await pool.request().query("SELECT * FROM VW_MOVIES_WITH_GENRES")).recordset
             movies = movies.map(movie => ({
                 ...movie,
                 GENRE: movie.GENRE.split(",")
@@ -22,7 +24,7 @@ export class MoviesRepository {
         }
     }
 
-    static create = async ({ input }) => {
+    create = async ({ input }) => {
         const {
             title,
             year,
@@ -32,7 +34,7 @@ export class MoviesRepository {
             poster,
             genre: genreInput
         } = input
-        const transac = await createTransaction()
+        const transac = await this.database.createTransaction()
         await transac.begin()
         try {
             const newIdResult = await transac.request().query("SELECT NEWID() ID")
@@ -76,7 +78,7 @@ export class MoviesRepository {
         }
     }
 
-    static update = async ({ id, input }) => {
+    update = async ({ id, input }) => {
         const {
             title,
             year,
@@ -86,7 +88,7 @@ export class MoviesRepository {
             poster,
             genre: genreInput
         } = input
-        const transaction = await createTransaction()
+        const transaction = await this.database.createTransaction()
         await transaction.begin()
         try {
             const updates = []
@@ -146,9 +148,9 @@ export class MoviesRepository {
         }
     }
 
-    static delete = async ({ id }) => {
+    delete = async ({ id }) => {
         try {
-            const result = await poolConnect
+            const result = await this.database.getPool()
                 .request()
                 .input("Id", id)
                 .query("DELETE FROM MOVIE WHERE ID = @Id")

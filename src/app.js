@@ -9,7 +9,7 @@ import { errorHandler } from "./middlewares/errorHandler.js"
 import { limiter } from "./middlewares/trafficLimiter.js"
 import { validateApiKey } from "./middlewares/validateApiKey.js"
 
-export const CreateApp = ({ moviesRepository }) => {
+export const CreateApp = ({ moviesRepository, database }) => {
     const app = express()
     app.disable("x-powered-by")
         .use(json())
@@ -19,7 +19,20 @@ export const CreateApp = ({ moviesRepository }) => {
         .use("/", createHealthRouter())
         .use(errorHandler)
 
-    app.listen(PORT, () => {
+    const server = app.listen(PORT, () => {
         console.log(`server listening on port http://localhost:${PORT}`)
     })
+
+    const shutdown = async () => {
+        console.log("Shutting down...")
+
+        server.close(async () => {
+            console.log("Closing database...")
+            await database.close()
+            process.exit(0)
+        })
+    }
+
+    process.on('SIGINT', shutdown)
+    process.on('SIGTERM', shutdown)
 }
