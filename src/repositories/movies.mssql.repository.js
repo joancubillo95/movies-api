@@ -1,10 +1,11 @@
 import { AppError } from "../utils/appError.js";
-import { DbError } from "../utils/dbError.js";
+import { MssqlErrorMapper } from "../utils/ErrorMappers/mssqlErrorMapper.js";
 import sql from "mssql"
 
 export class MoviesRepository {
-    constructor(database) {
+    constructor(database, errorMapper) {
         this.database = database
+        this.errorMapper = errorMapper
     }
     getAll = async () => {
         try {
@@ -16,11 +17,7 @@ export class MoviesRepository {
             }));
             return movies
         } catch (error) {
-            if (error.code === "EREQUEST") {
-                throw new DbError(error)
-            } else {
-                throw new AppError("Unexpected error", 500, error)
-            }
+            throw this.errorMapper.map(error)
         }
     }
 
@@ -69,12 +66,7 @@ export class MoviesRepository {
             return newMovie
         } catch (error) {
             await transac.rollback()
-            if (error.code === "EREQUEST") {
-                throw new DbError(error)
-            } else {
-                throw new AppError("Unexpected error", 500, error)
-            }
-
+            throw this.errorMapper.map(error)
         }
     }
 
@@ -140,11 +132,7 @@ export class MoviesRepository {
             await transaction.commit()
         } catch (error) {
             await transaction.rollback()
-            if (error.code === "EREQUEST") {
-                throw new DbError(error)
-            } else {
-                throw new AppError("Unexpected error", 500, error)
-            }
+            throw this.errorMapper.map(error)
         }
     }
 
@@ -157,11 +145,7 @@ export class MoviesRepository {
             const [rowsAffected] = result.rowsAffected
             return rowsAffected
         } catch (error) {
-            if (error.code === "EREQUEST") {
-                throw new DbError(error)
-            } else {
-                throw new AppError("Unexpected error", 500, error)
-            }
+            throw this.errorMapper.map(error)
         }
     }
 }
