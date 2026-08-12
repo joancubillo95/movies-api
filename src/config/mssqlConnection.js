@@ -21,18 +21,29 @@ const config = {
 export class MssqlDatabase {
     constructor() {
         this.pool = null
+        this.poolPromise = null
     }
 
     getPool = async () => {
-        if (!this.pool) {
-            this.pool = await new sql.ConnectionPool(config).connect()
+        if (this.pool) {
+            return this.pool
         }
-        return this.pool
+
+        if (!this.poolPromise) {
+            this.poolPromise = new sql.ConnectionPool(config)
+                .connect()
+                .then(pool => {
+                    this.pool = pool
+                    return pool
+                })
+        }
+
+        return this.poolPromise
     }
 
     createTransaction = async () => {
-        const pool = await this.getPool()
-        return await new sql.Transaction(pool)
+        const pool = this.pool ?? await this.getPool()
+        return new sql.Transaction(pool)
     }
 
     close = async () => {
