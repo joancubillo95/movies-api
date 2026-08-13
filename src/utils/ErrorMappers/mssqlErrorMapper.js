@@ -12,7 +12,6 @@ export class MssqlErrorMapper {
                 error
             )
         }
-        console.log("mapping error with number:" + error.number)
         switch (error.number) {
             case 547:
                 return new AppError(
