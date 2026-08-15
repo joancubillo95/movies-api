@@ -1,14 +1,35 @@
-CREATE OR REPLACE VIEW vw_movies_with_genres AS
-SELECT 
-    m.id,
-    m.title,
-    m.year,
-    m.director,
-    m.duration,
-    m.poster,
-    m.rate,
-    STRING_AGG(g.name, ',' ORDER BY g.name) AS genre
-FROM movie m
-INNER JOIN movie_genres mg ON m.id = mg.movie_id
-INNER JOIN genre g ON g.id = mg.genre_id
-GROUP BY m.id, m.title, m.year, m.director, m.duration, m.poster, m.rate;
+CREATE OR REPLACE PROCEDURE SP_UPDATE_MOVIE_GENRES(
+    P_MOVIE_ID UUID,
+    P_GENRES TEXT
+)
+LANGUAGE PLPGSQL
+AS $procedure$
+BEGIN
+    
+    INSERT INTO MOVIE_GENRES (MOVIE_ID, GENRE_ID)
+    SELECT P_MOVIE_iD, G.ID
+    FROM GENRE G
+    JOIN (
+        SELECT TRIM(UNNEST(STRING_TO_ARRAY(p_GENRES, ','))) AS NAME
+    ) GL
+    ON G.NAME = GL.NAME
+    WHERE NOT EXISTS(
+        SELECT 1 
+        FROM MOVIE_GENRES MG 
+        WHERE MG.MOVIE_ID = P_MOVIE_ID AND MG.GENRE_ID = G.ID  
+    );
+
+    --DELETE MISSING GENRES IN GENRELIST
+    DELETE FROM MOVIE_GENRES MG
+    WHERE MG.MOVIE_ID = P_MOVIE_ID
+    AND MG.GENRE_ID NOT IN(
+        SELECT G.ID 
+        FROM GENRE G 
+        JOIN (
+            SELECT TRIM(UNNEST(STRING_TO_ARRAY(P_GENRES, ','))) AS NAME
+        ) GL
+        ON G.NAME = GL.NAME
+    );
+
+END;
+$procedure$;
