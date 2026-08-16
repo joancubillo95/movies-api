@@ -1,12 +1,10 @@
 import { AppError } from "../utils/appError.js";
+import { BaseMssqlRepository } from "./base.mssql.repository.js";
 import { MssqlErrorMapper } from "../utils/ErrorMappers/mssqlErrorMapper.js";
 import sql from "mssql"
 
-export class MoviesRepository {
-    constructor(database, errorMapper) {
-        this.database = database
-        this.errorMapper = errorMapper
-    }
+export class MoviesRepository extends BaseMssqlRepository {
+
     getAll = async () => {
         try {
             const pool = await this.database.getPool()
