@@ -1,10 +1,13 @@
-import { CreateApp } from "../app.js";
-import { MoviesRepository } from "../repositories/movies.postgres.repository.js";
-import { PgDatabase } from "../config/postgresSqlConnection.js";
-import { PostgresErrorMapper } from "../utils/ErrorMappers/postgresErrorMapper.js";
+import { CreateApp } from "../app.js"
+import { MoviesRepository } from "../repositories/pg/movies.postgres.repository.js"
+import { PgDatabase } from "../config/postgresSqlConnection.js"
+import { PostgresErrorMapper } from "../utils/ErrorMappers/postgresErrorMapper.js"
+import { UsersRepository } from "../repositories/pg/users.repository.js"
 
 const database = new PgDatabase()
 const errorMapper = new PostgresErrorMapper()
-const repository = new MoviesRepository(database, errorMapper)
+const moviesRepository = new MoviesRepository(database, errorMapper)
+const usersRepository = new UsersRepository(database, errorMapper)
 
-CreateApp({ moviesRepository: repository, database: database })
+
+CreateApp({ moviesRepository: moviesRepository, usersRepository: usersRepository, database: database })
