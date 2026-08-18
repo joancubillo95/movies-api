@@ -5,6 +5,6 @@ import { MssqlErrorMapper } from "../utils/ErrorMappers/mssqlErrorMapper.js";
 
 const database = new MssqlDatabase()
 const errorMapper = new MssqlErrorMapper()
-const repository = new MoviesRepository(database, errorMapper)
+const moviesRepository = new MoviesRepository(database, errorMapper)
 
-CreateApp({ moviesRepository: repository, database: database })
+CreateApp({ moviesRepository: moviesRepository, database: database })

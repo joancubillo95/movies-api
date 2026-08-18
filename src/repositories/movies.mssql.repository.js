@@ -1,10 +1,12 @@
 import { AppError } from "../utils/appError.js";
-import { BaseMssqlRepository } from "./base.mssql.repository.js";
+import { BaseRepository } from "./base.repository.js";
+import { MssqlDatabase } from "../config/mssqlConnection.js";
 import { MssqlErrorMapper } from "../utils/ErrorMappers/mssqlErrorMapper.js";
+import { PgDatabase } from "../config/postgresSqlConnection.js";
+import { PostgresErrorMapper } from "../utils/ErrorMappers/postgresErrorMapper.js";
 import sql from "mssql"
 
-export class MoviesRepository extends BaseMssqlRepository {
-
+export class MoviesRepository extends BaseRepository {
     getAll = async () => {
         try {
             const pool = await this.database.getPool()
