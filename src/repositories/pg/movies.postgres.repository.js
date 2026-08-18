@@ -1,15 +1,10 @@
-import { AppError } from "../utils/appError.js"
-import { PgDatabase } from "../config/postgresSqlConnection.js"
-import { PostgresErrorMapper } from "../utils/ErrorMappers/postgresErrorMapper.js"
+import { AppError } from "../../utils/appError.js"
+import { BaseRepository } from "../base.repository.js"
+import { PgDatabase } from "../../config/postgresSqlConnection.js"
+import { PostgresErrorMapper } from "../../utils/ErrorMappers/postgresErrorMapper.js"
 import { STATUS_CODES } from "http"
 
-export class MoviesRepository {
-    constructor(database, errorMapper) {
-        /**@type {PgDatabase} */
-        this.database = database
-        /**@type {PostgresErrorMapper} */
-        this.errorMapper = errorMapper
-    }
+export class MoviesRepository extends BaseRepository {
     getAll = async () => {
         try {
             const pool = await this.database.getPool()
