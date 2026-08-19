@@ -7,6 +7,7 @@ export const createUsersRouter = ({ usersRepository }) => {
     const usersController = new UsersController({ usersRepository })
 
     usersRouter.get("/", usersController.getAll)
+    usersRouter.get("/:username", usersController.getByUsername)
 
     return usersRouter
 }
