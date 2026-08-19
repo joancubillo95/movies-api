@@ -3,10 +3,10 @@ export class LoginController {
         this.loginService = loginService
     }
 
-    login = (req, res) => {
+    login = async (req, res) => {
 
         const { username, password } = req.body
-        const token = this.loginService.validateLogin(username, password)
+        const token = await this.loginService.validateLogin(username, password)
         res.json({ token })
     }
 }

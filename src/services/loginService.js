@@ -19,9 +19,7 @@ export class LoginService {
                 throw new Error("Invalid login attempt")
             }
 
-            console.log(user.id)
             const token = this.generateToken(user.id)
-            console.log(token)
             return token
         } catch (error) {
             console.error("Error validating login:", error)
