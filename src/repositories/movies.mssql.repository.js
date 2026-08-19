@@ -1,28 +1,27 @@
-import { createTransaction, poolConnect, query } from "../config/mssqlConnection.js"
-
 import { AppError } from "../utils/appError.js";
-import { DbError } from "../utils/dbError.js";
+import { BaseRepository } from "./base.repository.js";
+import { MssqlDatabase } from "../config/mssqlConnection.js";
+import { MssqlErrorMapper } from "../utils/ErrorMappers/mssqlErrorMapper.js";
+import { PgDatabase } from "../config/postgresSqlConnection.js";
+import { PostgresErrorMapper } from "../utils/ErrorMappers/postgresErrorMapper.js";
 import sql from "mssql"
 
-export class MoviesRepository {
-    static getAll = async () => {
+export class MoviesRepository extends BaseRepository {
+    getAll = async () => {
         try {
-            let movies = await query("SELECT * FROM VW_MOVIES_WITH_GENRES")
+            const pool = await this.database.getPool()
+            let movies = (await pool.request().query("SELECT * FROM VW_MOVIES_WITH_GENRES")).recordset
             movies = movies.map(movie => ({
                 ...movie,
                 GENRE: movie.GENRE.split(",")
             }));
             return movies
         } catch (error) {
-            if (error.code === "EREQUEST") {
-                throw new DbError(error)
-            } else {
-                throw new AppError("Unexpected error", 500, error)
-            }
+            throw this.errorMapper.map(error)
         }
     }
 
-    static create = async ({ input }) => {
+    create = async ({ input }) => {
         const {
             title,
             year,
@@ -32,7 +31,7 @@ export class MoviesRepository {
             poster,
             genre: genreInput
         } = input
-        const transac = await createTransaction()
+        const transac = await this.database.createTransaction()
         await transac.begin()
         try {
             const newIdResult = await transac.request().query("SELECT NEWID() ID")
@@ -67,16 +66,11 @@ export class MoviesRepository {
             return newMovie
         } catch (error) {
             await transac.rollback()
-            if (error.code === "EREQUEST") {
-                throw new DbError(error)
-            } else {
-                throw new AppError("Unexpected error", 500, error)
-            }
-
+            throw this.errorMapper.map(error)
         }
     }
 
-    static update = async ({ id, input }) => {
+    update = async ({ id, input }) => {
         const {
             title,
             year,
@@ -86,7 +80,7 @@ export class MoviesRepository {
             poster,
             genre: genreInput
         } = input
-        const transaction = await createTransaction()
+        const transaction = await this.database.createTransaction()
         await transaction.begin()
         try {
             const updates = []
@@ -138,28 +132,20 @@ export class MoviesRepository {
             await transaction.commit()
         } catch (error) {
             await transaction.rollback()
-            if (error.code === "EREQUEST") {
-                throw new DbError(error)
-            } else {
-                throw new AppError("Unexpected error", 500, error)
-            }
+            throw this.errorMapper.map(error)
         }
     }
 
-    static delete = async ({ id }) => {
+    delete = async ({ id }) => {
         try {
-            const result = await poolConnect
+            const result = await this.database.getPool()
                 .request()
                 .input("Id", id)
                 .query("DELETE FROM MOVIE WHERE ID = @Id")
             const [rowsAffected] = result.rowsAffected
             return rowsAffected
         } catch (error) {
-            if (error.code === "EREQUEST") {
-                throw new DbError(error)
-            } else {
-                throw new AppError("Unexpected error", 500, error)
-            }
+            throw this.errorMapper.map(error)
         }
     }
 }

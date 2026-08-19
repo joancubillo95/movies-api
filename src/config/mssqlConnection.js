@@ -1,6 +1,6 @@
-import "dotenv/config";
+import "dotenv/config"
 
-import sql from 'mssql';
+import sql from "mssql"
 
 const config = {
     user: process.env.DB_USER,
@@ -18,16 +18,39 @@ const config = {
     }
 };
 
-const pool = new sql.ConnectionPool(config)
-const poolConnect = await pool.connect()
+export class MssqlDatabase {
+    constructor() {
+        this.pool = null
+        this.poolPromise = null
+    }
 
-const createTransaction = async () => {
-    return await new sql.Transaction(poolConnect)
+    getPool = async () => {
+        if (this.pool) {
+            return this.pool
+        }
+
+        if (!this.poolPromise) {
+            this.poolPromise = new sql.ConnectionPool(config)
+                .connect()
+                .then(pool => {
+                    this.pool = pool
+                    return pool
+                })
+        }
+
+        return this.poolPromise
+    }
+
+    createTransaction = async () => {
+        const pool = this.pool ?? await this.getPool()
+        return new sql.Transaction(pool)
+    }
+
+    close = async () => {
+        if (this.pool) {
+            await this.pool.close()
+            this.pool = null
+        }
+
+    }
 }
-
-const query = async (sqlString) => {
-    const result = await poolConnect.request().query(sqlString)
-    return result.recordset
-}
-
-export { poolConnect, query, createTransaction }
