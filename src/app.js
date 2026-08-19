@@ -7,6 +7,7 @@ import { MssqlDatabase } from "./config/mssqlConnection.js"
 import { PgDatabase } from "./config/postgresSqlConnection.js"
 import { PostgresErrorMapper } from "./utils/ErrorMappers/postgresErrorMapper.js"
 import { createHealthRouter } from "./routes/health.router.js"
+import { createLoginRouter } from "./routes/login.router.js"
 import { createMovieRouter } from "./routes/movies.router.js"
 import { createUsersRouter } from "./routes/users.router.js"
 import { errorHandler } from "./middlewares/errorHandler.js"
@@ -20,6 +21,7 @@ export const CreateApp = ({ moviesRepository, usersRepository, database }) => {
         .use(limiter)
         .use(validateApiKey)
         .use("/", createHealthRouter())
+        .use("/login", createLoginRouter({ usersRepository }))
         .use("/users", createUsersRouter({ usersRepository }))
         .use("/movies", createMovieRouter({ moviesRepository }))
 
