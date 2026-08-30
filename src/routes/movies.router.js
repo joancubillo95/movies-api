@@ -7,7 +7,18 @@ export const createMovieRouter = ({ moviesRepository }) => {
 
     const movieController = new MoviesController({ moviesRepository })
 
-    moviesRouter.get("/", auth, movieController.getAll)
+    /**
+     * @swagger
+     * /movies:
+     *   get:
+     *     summary: Get all movies
+     *     tags:
+     *       - Movies
+     *     responses:
+     *       200:
+     *         description: Successfully retrieved movies
+     */
+    moviesRouter.get("/", movieController.getAll)
     moviesRouter.post("/", movieController.create)
     moviesRouter.delete("/:id", movieController.delete)
     moviesRouter.patch("/:id", movieController.patch)

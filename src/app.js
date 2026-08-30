@@ -9,18 +9,22 @@ import { PostgresErrorMapper } from "./utils/ErrorMappers/postgresErrorMapper.js
 import { createHealthRouter } from "./routes/health.router.js"
 import { createLoginRouter } from "./routes/login.router.js"
 import { createMovieRouter } from "./routes/movies.router.js"
+import { createSwaggerDocs } from "./documentation/swagger.docs.js"
 import { createUsersRouter } from "./routes/users.router.js"
 import { errorHandler } from "./middlewares/errorHandler.js"
 import { limiter } from "./middlewares/trafficLimiter.js"
+import swaggerUi from "swagger-ui-express";
 import { validateApiKey } from "./middlewares/validateApiKey.js"
 
 export const CreateApp = ({ moviesRepository, usersRepository, database }) => {
     const app = express()
+    const url = `http://localhost:${PORT}`
     app.disable("x-powered-by")
         .use(json())
-        .use(limiter)
+        //.use(limiter)
         .use(validateApiKey)
         .use("/", createHealthRouter())
+        .use("/api-docs", swaggerUi.serve, swaggerUi.setup(createSwaggerDocs(url)))
         .use("/login", createLoginRouter({ usersRepository }))
         .use("/users", createUsersRouter({ usersRepository }))
         .use("/movies", createMovieRouter({ moviesRepository }))
@@ -28,7 +32,7 @@ export const CreateApp = ({ moviesRepository, usersRepository, database }) => {
         .use(errorHandler)
 
     const server = app.listen(PORT, () => {
-        console.log(`server listening on port http://localhost:${PORT}`)
+        console.log(`server listening on port ${url}`)
     })
 
     const shutdown = async () => {
