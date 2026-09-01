@@ -133,8 +133,6 @@ components:
 
         year:
           type: integer
-          minimum: 1900
-          maximum: 2024
           example: 1999
 
         director:
@@ -143,7 +141,6 @@ components:
 
         duration:
           type: integer
-          minimum: 1
           example: 136
 
         rate:
