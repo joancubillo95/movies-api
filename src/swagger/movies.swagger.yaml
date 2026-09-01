@@ -3,6 +3,7 @@ paths:
     get:
       summary: Get all movies
       description: Returns all movies.
+      tags: [Movie]
       responses:
         "200":
           description: List of movies
@@ -18,6 +19,7 @@ paths:
     post:
       summary: Create a movie
       description: Creates a new movie.
+      tags: [Movie]
       requestBody:
         required: true
         content:
@@ -37,9 +39,26 @@ paths:
           description: Unauthorized
 
   /api/v1/movie/{id}:
+    get:
+      summary: Get a movie by its id
+      description: Returns the movie to the correspondind id.
+      tags: [Movie]
+      responses:
+        "200":
+          description: Get a movie
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  $ref: "#/components/schemas/Movie"
+        "401":
+          description: Unauthorized
+
     delete:
       summary: Delete a movie
       description: Deletes a movie by its ID.
+      tags: [Movie]
       parameters:
         - name: id
           in: path
@@ -59,6 +78,7 @@ paths:
     patch:
       summary: Partially update a movie
       description: Updates one or more movie properties.
+      tags: [Movie]
       parameters:
         - name: id
           in: path
@@ -88,6 +108,7 @@ paths:
     put:
       summary: Replace a movie
       description: Replaces the movie with the provided data.
+      tags: [Movie]
       parameters:
         - name: id
           in: path
