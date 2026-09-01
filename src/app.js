@@ -26,7 +26,7 @@ export const CreateApp = ({ moviesRepository, usersRepository, database }) => {
         .use(validateApiKey)
         .use(apiVers + "/", createHealthRouter())
         .use(apiVers + "/api-docs", swaggerUi.serve, swaggerUi.setup(createSwaggerDocs(url)))
-        .use(apiVers + "/login", createLoginRouter({ usersRepository }))
+        .use(apiVers + "/auth", createLoginRouter({ usersRepository }))
         .use(apiVers + "/user", createUsersRouter({ usersRepository }))
         .use(apiVers + "/movie", createMovieRouter({ moviesRepository }))
 

@@ -8,7 +8,7 @@ export const createLoginRouter = ({ usersRepository }) => {
     const loginService = new LoginService(usersRepository)
     const loginController = new LoginController({ loginService })
 
-    loginRouter.post("/", loginController.login)
+    loginRouter.post("/login", loginController.login)
 
     return loginRouter
 }
