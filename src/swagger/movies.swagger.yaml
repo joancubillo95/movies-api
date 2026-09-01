@@ -1,5 +1,5 @@
 paths:
-  /api/v1/movies:
+  /api/v1/movie:
     get:
       summary: Get all movies
       description: Returns all movies.
@@ -36,7 +36,7 @@ paths:
         "401":
           description: Unauthorized
 
-  /api/v1/movies/{id}:
+  /api/v1/movie/{id}:
     delete:
       summary: Delete a movie
       description: Deletes a movie by its ID.
