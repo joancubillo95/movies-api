@@ -1,0 +1,73 @@
+paths:
+  /api/v1/user:
+    get:
+      summary: Get all users
+      description: Retrieves all users without exposing their passwords.
+      tags: [User]
+      responses:
+        200:
+          description: List of users retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/User"
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden
+        404:
+          description: User not found
+
+  /api/v1/user/{id}:
+    get:
+      summary: Get a user by ID
+      description: Retrieves a user by ID without exposing their password.
+      tags: [User]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: User ID
+          schema:
+            type: integer
+            example: 1
+      responses:
+        200:
+          description: User retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden
+        404:
+          description: User not found
+
+components:
+  schemas:
+    User:
+      type: object
+      required:
+        - id
+        - username
+        - role
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 550e8400-e29b-41d4-a716-446655440000
+
+        username:
+          type: string
+          example: user
+
+        role:
+          type: string
+          enum:
+            - user
+            - admin
+          example: user

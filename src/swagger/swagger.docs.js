@@ -1,4 +1,4 @@
-import { authSwagger, moviesSwagger } from "../utils/yamlParser.js"
+import { authSwagger, moviesSwagger, userSwagger } from "../utils/yamlParser.js"
 
 import swaggerJsDoc from "swagger-jsdoc";
 
@@ -24,11 +24,17 @@ export const createSwaggerDocs = (url) => {
                         name: "api-key"
                     }
                 },
-                ...moviesSwagger.components,
+                schemas: {
+                    ...moviesSwagger.components.schemas,
+                    ...userSwagger.components.schemas,
+                },
+
+
             },
             paths: {
                 ...moviesSwagger.paths,
                 ...authSwagger.paths,
+                ...userSwagger.paths,
             },
             security: [
                 {

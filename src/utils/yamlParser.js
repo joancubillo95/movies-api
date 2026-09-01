@@ -15,4 +15,11 @@ const authSwagger = YAML.parse(
     )
 );
 
-export { moviesSwagger, authSwagger }
+const userSwagger = YAML.parse(
+    fs.readFileSync(
+        new URL("../swagger/users.swagger.yaml", import.meta.url),
+        "utf8"
+    )
+);
+
+export { moviesSwagger, authSwagger, userSwagger }
