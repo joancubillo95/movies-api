@@ -1,0 +1,176 @@
+paths:
+  /api/v1/movies:
+    get:
+      summary: Get all movies
+      description: Returns all movies.
+      responses:
+        "200":
+          description: List of movies
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Movie"
+        "401":
+          description: Unauthorized
+
+    post:
+      summary: Create a movie
+      description: Creates a new movie.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Movie"
+      responses:
+        "201":
+          description: Movie created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Movie"
+        "400":
+          description: Invalid movie data
+        "401":
+          description: Unauthorized
+
+  /api/v1/movies/{id}:
+    delete:
+      summary: Delete a movie
+      description: Deletes a movie by its ID.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Movie ID
+          schema:
+            type: integer
+            example: 1
+      responses:
+        "204":
+          description: Movie deleted successfully
+        "401":
+          description: Unauthorized
+        "404":
+          description: Movie not found
+
+    patch:
+      summary: Partially update a movie
+      description: Updates one or more movie properties.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Movie ID
+          schema:
+            type: integer
+            example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Movie"
+      responses:
+        "200":
+          description: Movie updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Movie"
+        "401":
+          description: Unauthorized
+        "404":
+          description: Movie not found
+
+    put:
+      summary: Replace a movie
+      description: Replaces the movie with the provided data.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Movie ID
+          schema:
+            type: integer
+            example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Movie"
+      responses:
+        "200":
+          description: Movie replaced successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Movie"
+        "401":
+          description: Unauthorized
+        "404":
+          description: Movie not found
+
+components:
+  schemas:
+    Movie:
+      type: object
+      required:
+        - title
+        - year
+        - director
+        - duration
+        - rate
+        - poster
+        - genre
+      properties:
+        title:
+          type: string
+          example: The Matrix
+
+        year:
+          type: integer
+          minimum: 1900
+          maximum: 2024
+          example: 1999
+
+        director:
+          type: string
+          example: Lana Wachowski
+
+        duration:
+          type: integer
+          minimum: 1
+          example: 136
+
+        rate:
+          type: number
+          minimum: 0
+          maximum: 10
+          example: 8.7
+
+        poster:
+          type: string
+          format: uri
+          example: https://example.com/poster.jpg
+
+        genre:
+          type: array
+          items:
+            type: string
+            enum:
+              - Action
+              - Adventure
+              - Crime
+              - Comedy
+              - Drama
+              - Fantasy
+              - Horror
+              - Thriller
+              - Sci-Fi
+          example:
+            - Action
+            - Sci-Fi

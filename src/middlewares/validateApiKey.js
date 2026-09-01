@@ -1,7 +1,7 @@
 import { API_KEY } from "../config/env.js"
 
 export const validateApiKey = (req, res, next) => {
-    if (req.path.startsWith("/api-docs")) {
+    if (req.path.startsWith("/api/v1/api-docs")) {
         return next();
     }
     const clientApiKey = req.headers["api-key"]

@@ -1,6 +1,16 @@
+import YAML from "yaml";
+import fs from "fs";
 import swaggerJsDoc from "swagger-jsdoc";
 
 export const createSwaggerDocs = (url) => {
+
+    const moviesSwagger = YAML.parse(
+        fs.readFileSync(
+            new URL("./movies.swagger.yaml", import.meta.url),
+            "utf8"
+        )
+    );
+
     const swaggerOptions = {
         swaggerDefinition: {
             openapi: '3.0.0',
@@ -21,7 +31,11 @@ export const createSwaggerDocs = (url) => {
                         in: "header",
                         name: "api-key"
                     }
-                }
+                },
+                ...moviesSwagger.components,
+            },
+            paths: {
+                ...moviesSwagger.paths,
             },
             security: [
                 {
@@ -29,8 +43,8 @@ export const createSwaggerDocs = (url) => {
                 },
             ],
         },
-        apis: ['./src/routes/*.js'], // files containing annotations as above
-    };
+        apis: [], // files containing annotations as above
+    }
 
     return swaggerJsDoc(swaggerOptions);
 }
