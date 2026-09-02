@@ -6,6 +6,9 @@ import express, { json } from "express"
 import { MssqlDatabase } from "./config/mssqlConnection.js"
 import { PgDatabase } from "./config/postgresSqlConnection.js"
 import { PostgresErrorMapper } from "./utils/ErrorMappers/postgresErrorMapper.js"
+import { authenticateJWT } from "./middlewares/auth.js"
+import cors from "cors"
+import { corsMiddleware } from "./middlewares/cors.js"
 import { createHealthRouter } from "./routes/health.router.js"
 import { createLoginRouter } from "./routes/login.router.js"
 import { createMovieRouter } from "./routes/movies.router.js"
@@ -21,6 +24,7 @@ export const CreateApp = ({ moviesRepository, usersRepository, database }) => {
     const app = express()
     const url = `http://localhost:${PORT}`
     app.disable("x-powered-by")
+        .use(corsMiddleware)
         .use(json())
         .use(limiter)
         .use(validateApiKey)

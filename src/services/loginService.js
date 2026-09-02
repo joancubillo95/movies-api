@@ -19,7 +19,7 @@ export class LoginService {
                 throw new Error("Invalid login attempt")
             }
 
-            const token = this.generateToken(user.id)
+            const token = this.generateToken(user)
             return token
         } catch (error) {
             console.error("Error validating login:", error)
@@ -27,11 +27,15 @@ export class LoginService {
         }
     }
 
-    generateToken = (userId) => {
+    generateToken = (user) => {
         return jwt.sign(
-            { userId },
+            {
+                id: user.id,
+                username: user.username,
+                role: user.role
+            },
             process.env.JWT_SECRET,
-            { expiresIn: "1h" }
+            { expiresIn: "10m" }
         );
     }
 }
