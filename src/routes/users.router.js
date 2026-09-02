@@ -8,7 +8,7 @@ export const createUsersRouter = ({ usersRepository }) => {
 
     const usersController = new UsersController({ usersRepository })
 
-    usersRouter.get("/", authenticateJWT, requireRole("admin"), usersController.getAll)
+    usersRouter.get("/", requireRole("admin"), usersController.getAll)
     usersRouter.get("/:username", usersController.getByUsername)
 
     return usersRouter
