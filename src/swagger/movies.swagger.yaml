@@ -42,7 +42,7 @@ paths:
 
   /api/v1/movie/{id}:
     get:
-      summary: Get a movie by its id
+      summary: Get a movie by id
       description: Returns the movie to the correspondind id.
       tags: [Movie]
       parameters:

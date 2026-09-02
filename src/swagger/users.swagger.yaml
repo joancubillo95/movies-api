@@ -22,7 +22,7 @@ paths:
 
   /api/v1/user/{id}:
     get:
-      summary: Get a user by ID
+      summary: Get a user by id
       description: Retrieves a user by ID without exposing their password.
       tags: [User]
       parameters:
