@@ -3,6 +3,11 @@ export class UsersController {
         this.usersRepository = usersRepository
     }
 
+    getById = async (req, res) => {
+        const { id } = req.params
+        const user = await this.usersRepository.getById({ id })
+        return res.json(user)
+    }
 
     getByUsername = async (req, res) => {
         const { username } = req.params

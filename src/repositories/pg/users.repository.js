@@ -7,7 +7,21 @@ export class UsersRepository extends BaseRepository {
     getByUsername = async ({ username }) => {
         try {
             const pool = await this.database.getPool()
+
             const [user] = (await pool.query("SELECT * FROM USERS WHERE UPPER(USERNAME) = $1", [username.toUpperCase()])).rows
+            if (!user) {
+                throw new Error("User not found!")
+            }
+            return user
+        } catch (error) {
+            throw this.errorMapper.map(error)
+        }
+    }
+
+    getById = async ({ id }) => {
+        try {
+            const pool = await this.database.getPool()
+            const [user] = (await pool.query("SELECT id, username, role FROM USERS WHERE id = $1", [id])).rows
             if (!user) {
                 throw new Error("User not found!")
             }
@@ -19,16 +33,13 @@ export class UsersRepository extends BaseRepository {
 
     getAll = async () => {
         try {
-
             const pool = await this.database.getPool()
-            const users = (await pool.query("SELECT * FROM USERS")).rows
+            const users = (await pool.query("SELECT id, username, role FROM USERS")).rows
             return users
         } catch (error) {
             console.log(error)
             throw this.errorMapper.map(error)
         }
-
-
     }
 
 }

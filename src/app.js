@@ -7,6 +7,7 @@ import { MssqlDatabase } from "./config/mssqlConnection.js"
 import { PgDatabase } from "./config/postgresSqlConnection.js"
 import { PostgresErrorMapper } from "./utils/ErrorMappers/postgresErrorMapper.js"
 import { authenticateJWT } from "./middlewares/auth.js"
+import cookieParser from "cookie-parser";
 import cors from "cors"
 import { corsMiddleware } from "./middlewares/cors.js"
 import { createHealthRouter } from "./routes/health.router.js"
@@ -27,12 +28,14 @@ export const CreateApp = ({ moviesRepository, usersRepository, database }) => {
         .use(corsMiddleware)
         .use(json())
         .use(limiter)
+        .use(cookieParser())
+        .use(limiter)
         .use(validateApiKey)
         .use(apiVers + "/", createHealthRouter())
         .use(apiVers + "/api-docs", swaggerUi.serve, swaggerUi.setup(createSwaggerDocs(url)))
         .use(apiVers + "/auth", createLoginRouter({ usersRepository }))
-        .use(apiVers + "/user", createUsersRouter({ usersRepository }))
-        .use(apiVers + "/movie", createMovieRouter({ moviesRepository }))
+        .use(apiVers + "/user", authenticateJWT, createUsersRouter({ usersRepository }))
+        .use(apiVers + "/movie", authenticateJWT, createMovieRouter({ moviesRepository }))
 
         .use(errorHandler)
 
