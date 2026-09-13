@@ -4,6 +4,8 @@ paths:
       summary: Get all users
       description: Retrieves all users without exposing their passwords.
       tags: [User]
+      security:
+        - bearerAuth: []
       responses:
         200:
           description: List of users retrieved successfully

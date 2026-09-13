@@ -22,6 +22,11 @@ export const createSwaggerDocs = (url) => {
                         type: "apiKey",
                         in: "header",
                         name: "api-key"
+                    },
+                    bearerAuth: {
+                        type: "http",
+                        scheme: "bearer",
+                        bearerFormat: "JWT"
                     }
                 },
                 schemas: {

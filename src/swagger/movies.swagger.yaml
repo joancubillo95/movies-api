@@ -4,6 +4,9 @@ paths:
       summary: Get all movies
       description: Returns all movies.
       tags: [Movie]
+      security:
+        - ApiKeyAuth: []
+          bearerAuth: []
       responses:
         200:
           description: List of movies
