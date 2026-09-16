@@ -5,7 +5,8 @@ paths:
       description: Retrieves all users without exposing their passwords.
       tags: [User]
       security:
-        - bearerAuth: []
+        - ApiKeyAuth: []
+          bearerAuth: []
       responses:
         200:
           description: List of users retrieved successfully
@@ -27,14 +28,16 @@ paths:
       summary: Get a user by id
       description: Retrieves a user by ID without exposing their password.
       tags: [User]
+      security:
+        - ApiKeyAuth: []
+          bearerAuth: []
       parameters:
         - name: id
           in: path
           required: true
           description: User ID
-          schema:
-            type: integer
-            example: 1
+          type: string
+          example: 550e8400-e29b-41d4-a716-446655440000
       responses:
         200:
           description: User retrieved successfully
