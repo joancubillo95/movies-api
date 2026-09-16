@@ -9,8 +9,8 @@ export const createUsersRouter = ({ usersRepository }) => {
     const usersController = new UsersController({ usersRepository })
 
     usersRouter.get("/", requireRole("admin"), usersController.getAll)
-    usersRouter.get("/getById/:id", usersController.getById)
-    usersRouter.get("/getByUsername/:username", usersController.getByUsername)
+    usersRouter.get("/:id", usersController.getById)
+    usersRouter.get("/:username", usersController.getByUsername)
 
     return usersRouter
 }

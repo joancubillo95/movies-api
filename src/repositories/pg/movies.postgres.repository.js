@@ -8,11 +8,33 @@ export class MoviesRepository extends BaseRepository {
         try {
             const pool = await this.database.getPool()
             let movies = (await pool.query("SELECT * FROM VW_MOVIES_WITH_GENRES")).rows
+            if (!movies) {
+                return null
+            }
             movies = movies.map(movie => ({
                 ...movie,
                 genre: movie.genre.split(",")
             }))
             return movies
+        } catch (error) {
+            throw this.errorMapper.map(error)
+        }
+
+    }
+    getById = async (id) => {
+        try {
+            const pool = await this.database.getPool()
+            const query = "SELECT * FROM VW_MOVIES_WITH_GENRES WHERE ID = $1"
+            const values = [id]
+            let movie = (await pool.query(query, values)).rows[0]
+            if (!movie) {
+                return null
+            }
+            movie = {
+                ...movie,
+                genre: movie.genre.split(",")
+            }
+            return movie
         } catch (error) {
             throw this.errorMapper.map(error)
         }

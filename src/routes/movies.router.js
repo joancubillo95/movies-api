@@ -9,6 +9,7 @@ export const createMovieRouter = ({ moviesRepository }) => {
     const movieController = new MoviesController({ moviesRepository })
 
     moviesRouter.get("/", movieController.getAll)
+    moviesRouter.get("/:id", movieController.getById)
     moviesRouter.post("/", requireRole("admin"), movieController.create)
     moviesRouter.delete("/:id", requireRole("admin"), movieController.delete)
     moviesRouter.patch("/:id", requireRole("admin"), movieController.patch)

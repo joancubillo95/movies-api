@@ -1,3 +1,4 @@
+import { AppError } from "../../utils/appError.js";
 import { BaseRepository } from "../base.repository.js";
 import { PgDatabase } from "../../config/postgresSqlConnection.js";
 import { PostgresErrorMapper } from "../../utils/ErrorMappers/postgresErrorMapper.js"
@@ -21,10 +22,8 @@ export class UsersRepository extends BaseRepository {
     getById = async ({ id }) => {
         try {
             const pool = await this.database.getPool()
-            const [user] = (await pool.query("SELECT id, username, role FROM USERS WHERE id = $1", [id])).rows
-            if (!user) {
-                throw new Error("User not found!")
-            }
+            const response = await pool.query("SELECT id, username, role FROM USERS WHERE id = $1", [id])
+            const [user] = response.rows
             return user
         } catch (error) {
             throw this.errorMapper.map(error)
