@@ -1,3 +1,4 @@
+import { AppError } from "../utils/appError.js"
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
 
@@ -19,20 +20,51 @@ export class LoginService {
                 throw new Error("Invalid login attempt")
             }
 
-            const token = this.generateToken(user.id)
-            return token
+            const token = this.generateToken(user)
+            const refreshToken = this.generateRefreshToken(user)
+            return { token, refreshToken, user: { id: user.id, username: user.username, role: user.role } }
         } catch (error) {
-            console.error("Error validating login:", error)
-            throw error
+            throw new AppError("Invalid login attempt", 401, error)
         }
     }
 
-    generateToken = (userId) => {
+    generateToken = (user) => {
         return jwt.sign(
-            { userId },
+            {
+                id: user.id,
+                username: user.username,
+                role: user.role
+            },
             process.env.JWT_SECRET,
-            { expiresIn: "1h" }
+            { expiresIn: "10m" }
         );
+    }
+
+    generateRefreshToken = (user) => {
+        return jwt.sign(
+            {
+                id: user.id
+            },
+            process.env.JWT_SECRET,
+            { expiresIn: "1d" }
+        );
+    }
+
+    refreshLogin = async (refreshToken) => {
+        try {
+            const payload = jwt.verify(
+                refreshToken,
+                process.env.JWT_SECRET
+            )
+
+            const user = await this.usersRepository.getById({
+                id: payload.id
+            })
+
+            return { token: this.generateToken(user), user }
+        } catch (error) {
+            throw new AppError("Invalid refresh token", 401, error)
+        }
     }
 }
 

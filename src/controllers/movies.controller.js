@@ -7,7 +7,19 @@ export class MoviesController {
 
     getAll = async (req, res) => {
         const movies = await this.moviesRepository.getAll()
+        if (!movies) {
+            return res.status(404).json({ message: "No movies found" })
+        }
         res.json(movies)
+    }
+
+    getById = async (req, res) => {
+        const { id } = req.params
+        const movie = await this.moviesRepository.getById(id)
+        if (!movie) {
+            return res.status(404).json({ message: "Movie not found" })
+        }
+        res.json(movie)
     }
 
     create = async (req, res) => {
@@ -31,7 +43,7 @@ export class MoviesController {
         }
 
         await this.moviesRepository.update({ id, input: result.data })
-        return res.json({ message: "Movie updated!" })
+        return res.json({ message: "Movie updated" })
     }
 
     put = async (req, res) => {
@@ -43,15 +55,15 @@ export class MoviesController {
         }
 
         await this.moviesRepository.update({ id, input: result.data })
-        return res.json({ message: "Movie updated!" })
+        return res.json({ message: "Movie updated" })
     }
 
     delete = async (req, res) => {
         const { id } = req.params
         const rowsAffected = await this.moviesRepository.delete({ id })
         if (rowsAffected == 0) {
-            return res.status(404).json({ "message": "Movie not found!" })
+            return res.status(404).json({ "message": "Movie not found" })
         }
-        return res.json({ "message": "Movie deleted!" })
+        return res.json({ "message": "Movie deleted" })
     }
 }

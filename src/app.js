@@ -6,29 +6,41 @@ import express, { json } from "express"
 import { MssqlDatabase } from "./config/mssqlConnection.js"
 import { PgDatabase } from "./config/postgresSqlConnection.js"
 import { PostgresErrorMapper } from "./utils/ErrorMappers/postgresErrorMapper.js"
+import { authenticateJWT } from "./middlewares/auth.js"
+import cookieParser from "cookie-parser";
+import cors from "cors"
+import { corsMiddleware } from "./middlewares/cors.js"
 import { createHealthRouter } from "./routes/health.router.js"
 import { createLoginRouter } from "./routes/login.router.js"
 import { createMovieRouter } from "./routes/movies.router.js"
+import { createSwaggerDocs } from "./swagger/swagger.docs.js"
 import { createUsersRouter } from "./routes/users.router.js"
 import { errorHandler } from "./middlewares/errorHandler.js"
 import { limiter } from "./middlewares/trafficLimiter.js"
+import swaggerUi from "swagger-ui-express"
 import { validateApiKey } from "./middlewares/validateApiKey.js"
 
 export const CreateApp = ({ moviesRepository, usersRepository, database }) => {
+    const apiVers = "/api/v1"
     const app = express()
+    const url = `http://localhost:${PORT}`
     app.disable("x-powered-by")
+        .use(corsMiddleware)
         .use(json())
         .use(limiter)
+        .use(cookieParser())
+        .use(limiter)
         .use(validateApiKey)
-        .use("/", createHealthRouter())
-        .use("/login", createLoginRouter({ usersRepository }))
-        .use("/users", createUsersRouter({ usersRepository }))
-        .use("/movies", createMovieRouter({ moviesRepository }))
+        .use(apiVers + "/", createHealthRouter())
+        .use(apiVers + "/api-docs", swaggerUi.serve, swaggerUi.setup(createSwaggerDocs(url)))
+        .use(apiVers + "/auth", createLoginRouter({ usersRepository }))
+        .use(apiVers + "/user", authenticateJWT, createUsersRouter({ usersRepository }))
+        .use(apiVers + "/movie", authenticateJWT, createMovieRouter({ moviesRepository }))
 
         .use(errorHandler)
 
     const server = app.listen(PORT, () => {
-        console.log(`server listening on port http://localhost:${PORT}`)
+        console.log(`server listening on port ${url}`)
     })
 
     const shutdown = async () => {
