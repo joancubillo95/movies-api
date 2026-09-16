@@ -1,10 +1,10 @@
 # Movies API
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
-[![Node.js CI](https://img.shields.io/badge/ci-github_actions-blue)](#) <!-- replace with real badge -->
-[![Docker Image](https://img.shields.io/badge/docker-ready-blue)](#) <!-- optional -->
+[![Node.js CI](https://img.shields.io/badge/ci-github_actions-blue)](#)
+[![Docker Image](https://img.shields.io/badge/docker-ready-blue)](#)
 
-A Node.js REST API to manage movies — built as a portfolio project to practice layered API design, dual database support (Postgres & SQL Server), authentication (API key + JWT), Docker, and Azure SQL integration.
+A Node.js REST API to manage movies — built as a portfolio project to practice layered API design, dual database support (PostgreSQL & SQL Server), authentication (API key + JWT), Docker, and Azure SQL integration.
 
 Based on Miguel Ángel Durán — [curso-node-js](https://github.com/midudev/curso-node-js).
 
@@ -19,25 +19,27 @@ Based on Miguel Ángel Durán — [curso-node-js](https://github.com/midudev/cur
 - [API Reference](#api-reference)
 - [Authentication](#authentication)
 - [Testing & Scripts](#testing--scripts)
+- [Security Notes](#security-notes)
 - [Contributing](#contributing)
 - [License](#license)
 
 ## Features
 - Full CRUD for movies (title, year, director, duration, poster, rate, genre).
-- User management with hashed passwords.
-- API key + JWT authentication.
+- User lookup by ID or username (passwords never exposed).
+- API key + JWT authentication with refresh tokens.
+- Role-based access (`admin` required for movie mutations and listing all users).
 - Dual database backends: PostgreSQL and SQL Server (Azure SQL).
 - Repository pattern for swappable data access.
-- Validation with Zod, centralized error handling, rate limiting, health endpoint.
-- Docker support.
+- OpenAPI/Swagger documentation at `/api/v1/api-docs`.
+- Validation with Zod, centralized error handling, rate limiting, and a health endpoint.
 
 ## Tech Stack
 - Node.js (ES Modules), Express 5
 - PostgreSQL (`pg`) and SQL Server (`mssql`)
-- Zod, bcrypt, jsonwebtoken, express-rate-limit
-- Docker
+- Zod, bcrypt, jsonwebtoken, express-rate-limit, swagger-ui-express
+- Docker, Vitest
 
-## Quick Start (local)
+## Quick Start
 1. Clone and install:
 
 ```bash
@@ -50,139 +52,218 @@ npm install
 
 ```bash
 cp .env.example .env
-# Fill DB_USER, DB_PASSWORD, DB_DATABASE, DB_HOST/DB_SERVER, API_KEY, JWT_SECRET, PORT
 ```
 
-3. Initialize database (see Database Initialization below).
+3. Initialize the database (see [Database Initialization](#database-initialization)).
 
 4. Run:
 
 ```bash
-# PostgreSQL
-node src/server/pgServer.js
-# or SQL Server
-node src/server/mssqlServer.js
+# PostgreSQL (default)
+npm run dev:pg
+
+# SQL Server
+npm run dev:mssql
 ```
 
 ## Configuration
-- .env variables (see `.env.example`)
-  - DB_USER, DB_PASSWORD, DB_DATABASE
-  - DB_HOST (Postgres), DB_SERVER (MSSQL)
-  - API_KEY, JWT_SECRET
-  - PORT (default 3000), NODE_ENV
+Environment variables (see `.env.example`):
+
+| Variable | Description |
+|----------|-------------|
+| `DB_USER` | Database username |
+| `DB_PASSWORD` | Database password |
+| `DB_DATABASE` | Database name |
+| `DB_HOST` | PostgreSQL host |
+| `DB_SERVER` | SQL Server / Azure SQL host |
+| `DB_DRIVER` | `postgres` or `mssql` |
+| `API_KEY` | Required on every request (except Swagger UI) |
+| `JWT_SECRET` | Secret used to sign access and refresh tokens |
+| `PORT` | Server port (default `3000`) |
+| `NODE_ENV` | `development` or `production` |
 
 ## Database Initialization
-- PostgreSQL: run SQL files in `db/postgres/` in order:
-  - 001_schema.sql
-  - 002_stored_procedures.sql
-- SQL Server: run `db/mssql/` in order:
-  - 001_schema.sql
-  - 002_views.sql
-  - 003_stored_procedures.sql
+Run the SQL scripts in order for your chosen backend.
 
-## Running in development
-- Use nodemon:
+**PostgreSQL** — files in `db/postgres/`:
+1. `001_schema.sql`
+2. `002_views.sql`
+3. `003_stored_procedures.sql`
+4. `004_users.sql`
 
-```bash
-npx nodemon src/server/pgServer.js
-npx nodemon src/server/mssqlServer.js
-```
+**SQL Server** — files in `db/mssql/`:
+1. `001_schema.sql`
+2. `002_views.sql`
+3. `003_stored_procedures.sql`
+
+## Running
+| Command | Description |
+|---------|-------------|
+| `npm run dev:pg` | Start with nodemon (PostgreSQL) |
+| `npm run dev:mssql` | Start with nodemon (SQL Server) |
+| `npm start` | Start in production mode (PostgreSQL) |
+| `npm test` | Run Vitest unit tests |
 
 ## Docker
-- Build:
+Build:
 
 ```bash
 docker build -t movies-api .
 ```
 
-- Run (env file required):
+Run (env file required):
 
 ```bash
 docker run -d -p 8080:8080 --env-file .env --name movies-api movies-api
 ```
 
-- Defaults to `PORT=8080` and the PostgreSQL entrypoint; override env or args as needed.
+Defaults to `PORT=8080` and the PostgreSQL entrypoint.
 
-## API Reference (high level)
-Base URL: http://localhost:<PORT>
+## API Reference
+**Base URL:** `http://localhost:<PORT>/api/v1`
+
+**Interactive docs:** `http://localhost:<PORT>/api/v1/api-docs`
+
+All endpoints require the `api-key` header unless noted. Protected routes also require a valid JWT (`Authorization: Bearer <token>`).
 
 ### Health
-- GET / — returns API version and server time (no auth)
+| Method | Path | Auth | Description |
+|--------|------|------|-------------|
+| GET | `/` | API key | Returns API version and server time |
 
-### Auth
-- POST /auth/login
-  Request headers:
-    Content-Type: application/json
-    api-key: YOUR_API_KEY
-  Body:
-  {
-    "username": "your_username",
-    "password": "your_password"
+### Authentication
+| Method | Path | Auth | Description |
+|--------|------|------|-------------|
+| POST | `/auth/login` | API key | Authenticate and receive a JWT |
+| POST | `/auth/refresh` | API key + refresh cookie | Issue a new access token |
+
+**Login request body:**
+```json
+{
+  "username": "your_username",
+  "password": "your_password"
+}
+```
+
+**Login response:**
+```json
+{
+  "token": "eyJ...",
+  "user": {
+    "id": "550e8400-e29b-41d4-a716-446655440000",
+    "username": "user",
+    "role": "user"
   }
-  Response:
-  {
-    "token": "eyJ..."
-  }
+}
+```
+
+A `refreshToken` httpOnly cookie is set on login (path `/api/v1/auth`, 7-day expiry). Access tokens expire after 10 minutes.
 
 ### Movies
-- GET /movies — list movies (protected)
-- POST /movies — create movie (protected)
-- GET /movies/:id — get single movie
-- PUT /movies/:id — replace movie
-- PATCH /movies/:id — partial update
-- DELETE /movies/:id — delete movie
+| Method | Path | Auth | Role | Description |
+|--------|------|------|------|-------------|
+| GET | `/movie` | JWT | any | List all movies |
+| GET | `/movie/:id` | JWT | any | Get a movie by ID |
+| POST | `/movie` | JWT | admin | Create a movie |
+| PUT | `/movie/:id` | JWT | admin | Replace a movie |
+| PATCH | `/movie/:id` | JWT | admin | Partially update a movie |
+| DELETE | `/movie/:id` | JWT | admin | Delete a movie |
 
-### Example: Login (curl)
+**Movie body (create / full update):**
+```json
+{
+  "title": "The Matrix",
+  "year": 1999,
+  "director": "Lana Wachowski",
+  "duration": 136,
+  "rate": 8.7,
+  "poster": "https://example.com/poster.jpg",
+  "genre": ["Action", "Sci-Fi"]
+}
+```
 
+Allowed genres: `Action`, `Adventure`, `Crime`, `Comedy`, `Drama`, `Fantasy`, `Horror`, `Thriller`, `Sci-Fi`.
+
+### Users
+| Method | Path | Auth | Role | Description |
+|--------|------|------|------|-------------|
+| GET | `/user` | JWT | admin | List all users |
+| GET | `/user/:id` | JWT | any | Get a user by ID |
+| GET | `/user/:username` | JWT | any | Get a user by username |
+
+User responses expose `id`, `username`, and `role` only — never passwords.
+
+### Examples
+
+**Login:**
 ```bash
-curl -X POST "http://localhost:3000/auth/login" \
+curl -X POST "http://localhost:3000/api/v1/auth/login" \
   -H "Content-Type: application/json" \
   -H "api-key: YOUR_API_KEY" \
   -d '{"username":"user","password":"pass"}'
 ```
 
-### Example: List movies (curl)
-
+**List movies:**
 ```bash
-curl -X GET "http://localhost:3000/movies" \
+curl -X GET "http://localhost:3000/api/v1/movie" \
   -H "Authorization: Bearer YOUR_JWT_TOKEN" \
   -H "api-key: YOUR_API_KEY"
 ```
 
-Allowed genres: Action, Adventure, Crime, Comedy, Drama, Fantasy, Horror, Thriller, Sci-Fi.
+**Get movie by ID:**
+```bash
+curl -X GET "http://localhost:3000/api/v1/movie/550e8400-e29b-41d4-a716-446655440000" \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -H "api-key: YOUR_API_KEY"
+```
+
+**Create movie (admin):**
+```bash
+curl -X POST "http://localhost:3000/api/v1/movie" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -H "api-key: YOUR_API_KEY" \
+  -d '{
+    "title": "The Matrix",
+    "year": 1999,
+    "director": "Lana Wachowski",
+    "duration": 136,
+    "rate": 8.7,
+    "poster": "https://example.com/poster.jpg",
+    "genre": ["Action", "Sci-Fi"]
+  }'
+```
+
+## Authentication
+Every request must include an `api-key` header matching the `API_KEY` env variable. Swagger UI (`/api/v1/api-docs`) is the only exception.
+
+Protected routes (`/movie`, `/user`) additionally require a Bearer JWT obtained from `/auth/login`. Tokens carry the user's `id`, `username`, and `role`.
+
+| Role | Permissions |
+|------|-------------|
+| `user` | Read movies and look up users |
+| `admin` | All `user` permissions plus create, update, delete movies and list all users |
+
+Rate limiting is enabled globally: 20 requests per 15-minute window per IP.
 
 ## Testing & Scripts
-- Add useful npm scripts to `package.json` if missing (suggested):
-  - "start": "node src/server/pgServer.js"
-  - "start:mssql": "node src/server/mssqlServer.js"
-  - "dev": "nodemon src/server/pgServer.js"
-  - "lint": "eslint ."
-  - "test": "jest"
+```bash
+npm test          # Run Vitest unit tests
+npm run dev:pg    # Development server (PostgreSQL)
+npm run dev:mssql # Development server (SQL Server)
+npm start         # Production start (PostgreSQL)
+```
 
-## Suggestions for improving documentation further
-- Add badges (CI, coverage, npm version, license, Docker Hub) with real badge URLs.
-- Provide a minimal example .env snippet and a sanitized `.env.example`.
-- Add explicit curl/Postman examples for each endpoint (request + sample response).
-- Publish an OpenAPI/Swagger or Postman collection and link it (helps users & clients).
-- Add a "Development" section showing key scripts in package.json (start, dev, test, lint).
-- Add a "Tests" section and CI config (GitHub Actions) with badges.
-- Add a "Contributing" section with guidelines and CLA/Code of Conduct if needed.
-- Add "Roadmap" or "Planned features" and a contact/maintainer line.
-- Mention supported Node.js versions and any performance or security notes (e.g., storing secrets).
-- Provide a database migrations approach or explain how to re-run SQL scripts safely.
-- Add examples using docker-compose for a full-stack local dev (postgres + app).
-- Add quick troubleshooting tips (common startup errors, DB connection issues).
-
-## Security and maintenance notes
-- Never commit .env with secrets. Use GitHub Actions secrets / Azure Key Vault in CI/CD.
-- Consider using migrations (e.g., Flyway/Knex/TypeORM migrations) instead of SQL scripts for production.
-- Ensure rate limit, input validation, and JWT secrets are rotated in production.
+## Security Notes
+- Never commit `.env` with secrets. Use GitHub Actions secrets or Azure Key Vault in CI/CD.
+- Rotate `API_KEY` and `JWT_SECRET` in production.
+- Consider a migration tool (Flyway, Knex, etc.) instead of raw SQL scripts for production deployments.
 
 ## Contributing
-- If you'd like, add a CONTRIBUTING.md and CODE_OF_CONDUCT.md. Provide instructions for opening issues and PRs, and a short PR checklist.
+Open an issue or pull request on [GitHub](https://github.com/joancubillo95/movies-api). For larger changes, describe the approach in an issue first.
 
 ## License
-MIT — see LICENSE
+MIT — see [LICENSE](LICENSE).
 
 ## Acknowledgements
 - Based on Miguel Ángel Durán — [curso-node-js](https://github.com/midudev/curso-node-js)
