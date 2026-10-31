@@ -14,7 +14,7 @@ export class LoginService {
 
     validateLogin = async (username, pass) => {
         try {
-            const user = await this.usersRepository.getByUsername({ username })
+            const user = await this.usersRepository.login({ username })
             const passMatch = await this.validatePassword(pass, user.password_hash)
             if (!passMatch) {
                 throw new Error("Invalid login attempt")
