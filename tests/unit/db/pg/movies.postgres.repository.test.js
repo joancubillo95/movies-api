@@ -35,3 +35,39 @@ describe("MoviesRepository.getById", () => {
         })
     })
 })
+
+describe("MoviesRepository.getAll", () => {
+    it("returns all movies with genre split into an array", async () => {
+        const id = "550e8400-e29b-41d4-a716-446655440000"
+        const query = vi.fn().mockResolvedValue({
+            rows: [
+                {
+                    id,
+                    title: "The Matrix",
+                    genre: "Action,Sci-Fi",
+                },
+            ],
+        })
+        const database = {
+            getPool: vi.fn().mockResolvedValue({ query }),
+        }
+        const errorMapper = {
+            map: vi.fn((error) => error),
+        }
+        const repository = new MoviesRepository(database, errorMapper)
+
+        const movie = await repository.getAll()
+
+        expect(query).toHaveBeenCalledWith(
+            "SELECT * FROM VW_MOVIES_WITH_GENRES"
+        )
+        expect(movie).toEqual([
+            {
+                id,
+                title: "The Matrix",
+                genre: ["Action", "Sci-Fi"]
+            }
+        ]
+        )
+    })
+})
