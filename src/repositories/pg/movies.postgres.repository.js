@@ -144,8 +144,8 @@ export class MoviesRepository extends BaseRepository {
                 const result = await transaction.query("CALL SP_UPDATE_MOVIE_GENRES($1, $2)", [id, genreInput.join(",")])
                 rowsAffected += result.rowCount
             }
-            return rowsAffected
             await transaction.query("COMMIT")
+            return rowsAffected
         } catch (error) {
             await transaction.query("ROLLBACK")
             throw this.errorMapper.map(error)
