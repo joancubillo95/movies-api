@@ -71,3 +71,32 @@ describe("MoviesRepository.getAll", () => {
         )
     })
 })
+
+describe("MoviesRepository.delete", () => {
+    it("delete a movie with its id and return number of rows affected", async () => {
+        const id = "550e8400-e29b-41d4-a716-446655440000"
+        const query = vi.fn().mockResolvedValue({
+            rows: [
+                {
+                    id,
+                    title: "The Matrix",
+                    genre: "Action,Sci-Fi",
+                },
+            ],
+        })
+        const database = {
+            getPool: vi.fn().mockResolvedValue({ query }),
+        }
+        const errorMapper = {
+            map: vi.fn((error) => error),
+        }
+        const repository = new MoviesRepository(database, errorMapper)
+
+        const result = await repository.delete({ id })
+        expect(query).toHaveBeenCalledWith(
+            "DELETE FROM MOVIE WHERE ID = $1",
+            [id]
+        )
+
+    })
+})
