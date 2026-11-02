@@ -159,7 +159,7 @@ export class MoviesRepository extends BaseRepository {
             const query = "DELETE FROM MOVIE WHERE ID = $1"
             const values = [id]
             const result = await (await this.database.getPool()).query(query, values)
-            return result.rowCount
+            return result.rowCount > 0
         } catch (error) {
             throw this.errorMapper.map(error)
         }
