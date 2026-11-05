@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
-import { AppError } from "../../../src/utils/appError";
-import { MssqlErrorMapper } from "../../../src/utils/ErrorMappers/mssqlErrorMapper";
+import { AppError } from "../../../../src/utils/appError";
+import { MssqlErrorMapper } from "../../../../src/utils/ErrorMappers/mssqlErrorMapper";
 
 describe("MssqlErrorMapper", () => {
     it("maps duplicate errors to AppError", () => {

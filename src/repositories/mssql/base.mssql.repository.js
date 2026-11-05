@@ -1,5 +1,5 @@
-import { MssqlDatabase } from "../config/mssqlConnection.js"
-import { MssqlErrorMapper } from "../utils/ErrorMappers/mssqlErrorMapper.js"
+import { MssqlDatabase } from "../../config/mssqlConnection.js"
+import { MssqlErrorMapper } from "../../utils/ErrorMappers/mssqlErrorMapper.js"
 
 export class BaseMssqlRepository {
     constructor(database, errorMapper) {
