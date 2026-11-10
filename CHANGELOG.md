@@ -1,3 +1,10 @@
+## [1.0.2](https://github.com/joancubillo95/movies-api/compare/v1.0.1...v1.0.2) (2026-11-10)
+
+
+### Bug Fixes
+
+* update env example and readme file ([#16](https://github.com/joancubillo95/movies-api/issues/16)) ([04fe756](https://github.com/joancubillo95/movies-api/commit/04fe756bb8c3dce4457afe1d203285b32a502069))
+
 ## [1.0.1](https://github.com/joancubillo95/movies-api/compare/v1.0.0...v1.0.1) (2026-11-10)
 
 
