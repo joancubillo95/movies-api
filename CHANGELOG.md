@@ -1,3 +1,10 @@
+## [1.0.1](https://github.com/joancubillo95/movies-api/compare/v1.0.0...v1.0.1) (2026-11-10)
+
+
+### Bug Fixes
+
+* minor fix ([#15](https://github.com/joancubillo95/movies-api/issues/15)) ([c49bf2d](https://github.com/joancubillo95/movies-api/commit/c49bf2d93226e8ce2f3075866fdc37da083881dc))
+
 # 1.0.0 (2026-11-10)
 
 
