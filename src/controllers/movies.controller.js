@@ -60,10 +60,10 @@ export class MoviesController {
 
     delete = async (req, res) => {
         const { id } = req.params
-        const rowsAffected = await this.moviesRepository.delete({ id })
-        if (rowsAffected == 0) {
+        const deleted = await this.moviesRepository.delete({ id })
+        if (!deleted) {
             return res.status(404).json({ "message": "Movie not found" })
         }
-        return res.json({ "message": "Movie deleted" })
+        return res.status(204).json({ "message": "Movie deleted" })
     }
 }

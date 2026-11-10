@@ -5,14 +5,20 @@ import { PostgresErrorMapper } from "../../utils/ErrorMappers/postgresErrorMappe
 
 export class UsersRepository extends BaseRepository {
 
+    login = async ({ username }) => {
+        try {
+            const pool = await this.database.getPool()
+            const [user] = (await pool.query("SELECT id, username, role, password_hash FROM USERS WHERE UPPER(USERNAME) = $1", [username.toUpperCase()])).rows
+            return user
+        } catch (error) {
+            throw this.errorMapper.map(error)
+        }
+    }
+
     getByUsername = async ({ username }) => {
         try {
             const pool = await this.database.getPool()
-
-            const [user] = (await pool.query("SELECT * FROM USERS WHERE UPPER(USERNAME) = $1", [username.toUpperCase()])).rows
-            if (!user) {
-                throw new Error("User not found!")
-            }
+            const [user] = (await pool.query("SELECT id, username, role FROM USERS WHERE UPPER(USERNAME) = $1", [username.toUpperCase()])).rows
             return user
         } catch (error) {
             throw this.errorMapper.map(error)
@@ -36,7 +42,6 @@ export class UsersRepository extends BaseRepository {
             const users = (await pool.query("SELECT id, username, role FROM USERS")).rows
             return users
         } catch (error) {
-            console.log(error)
             throw this.errorMapper.map(error)
         }
     }
