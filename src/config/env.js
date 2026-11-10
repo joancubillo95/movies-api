@@ -7,7 +7,8 @@ const envSchema = z.object({
     NODE_ENV: z.enum(["development", "production"]).default("development"),
     PORT: z.coerce.number().int().positive().nonoptional(),
     API_KEY: z.string().min(1),
-    DB_DRIVER: z.enum(["mssql", "postgres"])
+    DB_DRIVER: z.enum(["mssql", "postgres"]),
+    JWT_SECRET: z.string().min(1)
 })
 
 const env = envSchema.parse(process.env)
