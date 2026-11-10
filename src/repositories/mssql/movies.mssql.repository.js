@@ -130,7 +130,6 @@ export class MoviesRepository extends BaseRepository {
                     .execute("UPDATE_MOVIE_GENRES")
             }
             await transaction.commit()
-            return movieRows
         } catch (error) {
             await transaction.rollback()
             throw this.errorMapper.map(error)
