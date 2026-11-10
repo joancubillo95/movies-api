@@ -144,8 +144,8 @@ export class MoviesRepository extends BaseRepository {
                 const result = await transaction.query("CALL SP_UPDATE_MOVIE_GENRES($1, $2)", [id, genreInput.join(",")])
                 rowsAffected += result.rowCount
             }
-            return rowsAffected
             await transaction.query("COMMIT")
+            return rowsAffected
         } catch (error) {
             await transaction.query("ROLLBACK")
             throw this.errorMapper.map(error)
@@ -159,7 +159,7 @@ export class MoviesRepository extends BaseRepository {
             const query = "DELETE FROM MOVIE WHERE ID = $1"
             const values = [id]
             const result = await (await this.database.getPool()).query(query, values)
-            return result.rowCount
+            return result.rowCount > 0
         } catch (error) {
             throw this.errorMapper.map(error)
         }
