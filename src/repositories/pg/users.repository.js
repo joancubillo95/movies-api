@@ -9,7 +9,7 @@ export class UsersRepository extends BaseRepository {
         try {
             const pool = await this.database.getPool()
 
-            const [user] = (await pool.query("SELECT * FROM USERS WHERE UPPER(USERNAME) = $1", [username.toUpperCase()])).rows
+            const [user] = (await pool.query("SELECT id, username, role FROM USERS WHERE UPPER(USERNAME) = $1", [username.toUpperCase()])).rows
             if (!user) {
                 throw new Error("User not found!")
             }
