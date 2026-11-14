@@ -1,3 +1,10 @@
+## [1.0.4](https://github.com/joancubillo95/movies-api/compare/v1.0.3...v1.0.4) (2026-11-14)
+
+
+### Bug Fixes
+
+* semantic release update readme file ([#19](https://github.com/joancubillo95/movies-api/issues/19)) ([b60fc09](https://github.com/joancubillo95/movies-api/commit/b60fc0944b83835a59681da95005783518d99444))
+
 ## [1.0.3](https://github.com/joancubillo95/movies-api/compare/v1.0.2...v1.0.3) (2026-11-11)
 
 
