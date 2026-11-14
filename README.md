@@ -2,7 +2,7 @@
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![CI](https://github.com/joancubillo95/movies-api/actions/workflows/ci.yml/badge.svg)](https://github.com/joancubillo95/movies-api/actions/workflows/ci.yml)
-[![Release](https://img.shields.io/badge/release-v1.0.0-blue.svg)](CHANGELOG.md)
+[![Release](https://img.shields.io/github/v/release/joancubillo95/movies-api?display_name=tag&sort=semver)](https://github.com/joancubillo95/movies-api/releases)
 [![Docker Image](https://img.shields.io/badge/docker-ready-blue)](#)
 
 A Node.js REST API to manage movies — built as a portfolio project to practice layered API design, dual database support (PostgreSQL & SQL Server), authentication (API key + JWT), Docker, and Azure SQL integration.
@@ -305,7 +305,7 @@ The test suite currently contains 20 tests:
 
 **CI** (`.github/workflows/ci.yml`): runs on pushes to `main`, `develop`, and `feature/*`, and on pull requests to `develop`. It installs with `npm ci`, runs the tests with coverage, and uploads the coverage report.
 
-**Releases** (`.github/workflows/release.yml`): semantic-release runs on pushes to `main`, updates `CHANGELOG.md`, bumps the package version, and publishes the GitHub release. The current release is `v1.0.0`.
+**Releases** (`.github/workflows/release.yml`): semantic-release runs on pushes to `main`, updates `CHANGELOG.md`, bumps the package version, and publishes the GitHub release.
 
 ## Security Notes
 - Never commit `.env` with secrets. Use GitHub Actions secrets or Azure Key Vault in CI/CD.
@@ -333,3 +333,4 @@ MIT — see [LICENSE](LICENSE).
 
 ## Acknowledgements
 - Based on Miguel Ángel Durán — [curso-node-js](https://github.com/midudev/curso-node-js)
+
