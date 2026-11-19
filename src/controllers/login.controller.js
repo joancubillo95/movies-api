@@ -20,18 +20,11 @@ export class LoginController {
     }
 
     refreshLogin = async (req, res) => {
-        try {
-            const { refreshToken } = req.cookies
-
-            if (!refreshToken) {
-                throw new AppError("Refresh token required", 401)
-            }
-
-            const { token, user } = await this.loginService.refreshLogin(refreshToken)
-
-            res.json({ token, user })
-        } catch (error) {
-            throw new AppError("Unexpected error trying to refresh token", 500, error)
+        const { refreshToken } = req.cookies
+        if (!refreshToken) {
+            throw new AppError("Refresh token required", 401)
         }
+        const { token, user } = await this.loginService.refreshLogin(refreshToken)
+        res.json({ token, user })
     }
 }
