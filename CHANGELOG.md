@@ -1,3 +1,10 @@
+## [1.0.5](https://github.com/joancubillo95/movies-api/compare/v1.0.4...v1.0.5) (2026-11-19)
+
+
+### Bug Fixes
+
+* resolve known bugs in users, auth and mssql entry point ([#20](https://github.com/joancubillo95/movies-api/issues/20)) ([93616d3](https://github.com/joancubillo95/movies-api/commit/93616d3af90c1d3b27981f160d90eb98242acbb5))
+
 ## [1.0.4](https://github.com/joancubillo95/movies-api/compare/v1.0.3...v1.0.4) (2026-11-14)
 
 
