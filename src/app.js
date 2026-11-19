@@ -29,7 +29,6 @@ export const CreateApp = ({ moviesRepository, usersRepository, database }) => {
         .use(json())
         .use(limiter)
         .use(cookieParser())
-        .use(limiter)
         .use(validateApiKey)
         .use(apiVers + "/", createHealthRouter())
         .use(apiVers + "/api-docs", swaggerUi.serve, swaggerUi.setup(createSwaggerDocs(url)))
