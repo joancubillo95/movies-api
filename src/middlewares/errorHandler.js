@@ -12,7 +12,7 @@ export function errorHandler(
     console.error("Original error:" + err.originalError)
     // Original Error object cannot be sent in res.json()
     // because Error instances are not fully serializable.
-    return res.status(err.statusCode).json({
+    return res.status(err.statusCode ?? 500).json({
       message: err.message + ". Check logs for additional information.",
     })
   } else {
