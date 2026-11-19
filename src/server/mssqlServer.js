@@ -1,5 +1,5 @@
 import { CreateApp } from "../app.js";
-import { MoviesRepository } from "../repositories/movies.mssql.repository.js";
+import { MoviesRepository } from '../repositories/mssql/movies.mssql.repository.js'
 import { MssqlDatabase } from "../config/mssqlConnection.js";
 import { MssqlErrorMapper } from "../utils/ErrorMappers/mssqlErrorMapper.js";
 
