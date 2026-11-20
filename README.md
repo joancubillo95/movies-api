@@ -3,11 +3,11 @@
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![CI](https://github.com/joancubillo95/movies-api/actions/workflows/ci.yml/badge.svg)](https://github.com/joancubillo95/movies-api/actions/workflows/ci.yml)
 [![Release](https://img.shields.io/github/v/release/joancubillo95/movies-api?display_name=tag&sort=semver)](https://github.com/joancubillo95/movies-api/releases)
-[![Docker Image](https://img.shields.io/badge/docker-ready-blue)](#)
+[![Docker Image](https://img.shields.io/badge/docker-ready-blue)](https://github.com/joancubillo95/movies-api/Dockerfile)
 
 A Node.js REST API to manage movies — built as a portfolio project to practice layered API design, dual database support (PostgreSQL & SQL Server), authentication (API key + JWT), Docker, and Azure SQL integration.
 
-The **PostgreSQL** setup is the default and the most complete path. A SQL Server repository exists, but the SQL Server entry point is not fully wired yet — see [Known Limitations](#known-limitations).
+A SQL Server repository exists, but its entry point only serves movies (no users or auth) — see [Known Limitations](#known-limitations).
 
 Based on Miguel Ángel Durán — [curso-node-js](https://github.com/midudev/curso-node-js).
 
@@ -70,7 +70,7 @@ cp .env.example .env
 # PostgreSQL (default and recommended)
 npm run dev:pg
 
-# SQL Server (not fully wired yet — see Known Limitations)
+# SQL Server (movies only, no users/auth — see Known Limitations)
 npm run dev:mssql
 ```
 
@@ -113,7 +113,7 @@ Both schemas seed the same genres: `Drama`, `Action`, `Crime`, `Adventure`, `Sci
 | Command | Description |
 |---------|-------------|
 | `npm run dev:pg` | Start with nodemon (PostgreSQL) |
-| `npm run dev:mssql` | SQL Server entry point — currently not fully wired, see [Known Limitations](#known-limitations) |
+| `npm run dev:mssql` | SQL Server entry point — movies only, no users/auth, see [Known Limitations](#known-limitations) |
 | `npm start` | Start in production mode (PostgreSQL) |
 | `npm test` | Run Vitest in watch mode |
 | `npx vitest run --coverage` | Run the test suite once and print coverage |
@@ -177,7 +177,7 @@ The login response also sets a `refreshToken` cookie:
 - `sameSite: strict`
 - `secure: true` — the cookie is only sent over HTTPS
 - path `/api/v1/auth`
-- `maxAge` of 7 days
+- `maxAge` of 1 day
 
 Access tokens expire after 10 minutes. Refresh tokens themselves expire after 1 day.
 
@@ -189,7 +189,7 @@ Access tokens expire after 10 minutes. Refresh tokens themselves expire after 1 
 | POST | `/movie` | JWT | admin | Create a movie |
 | PUT | `/movie/:id` | JWT | admin | Replace a movie |
 | PATCH | `/movie/:id` | JWT | admin | Partially update a movie |
-| DELETE | `/movie/:id` | JWT | admin | Delete a movie |
+| DELETE | `/movie/:id` | JWT | admin | Delete a movie(returns 204 No Content) |
 
 **Movie body (create / full update):**
 ```json
@@ -294,16 +294,16 @@ Rate limiting is configured globally for 20 requests per 15-minute window per IP
 npm test                      # Vitest watch mode
 npx vitest run --coverage     # One-off test run with coverage
 npm run dev:pg                # Development server (PostgreSQL)
-npm run dev:mssql             # SQL Server entry point (not fully wired)
+npm run dev:mssql             # SQL Server entry point (movies only, no users/auth)
 npm start                     # Production start (PostgreSQL)
 ```
 
-The test suite currently contains 20 tests:
+Run `npx vitest run --coverage` for current results. Tests live in:
 
 - `tests/unit/db/pg/movies.postgres.repository.test.js` — PostgreSQL movie repository
 - `tests/unit/db/mssql/mssqlErrorMapper.test.js` — SQL Server error mapper
 
-**CI** (`.github/workflows/ci.yml`): runs on pushes to `main`, `develop`, and `feature/*`, and on pull requests to `develop`. It installs with `npm ci`, runs the tests with coverage, and uploads the coverage report.
+**CI** (`.github/workflows/ci.yml`): runs on pushes to main and on all pull requests. It installs with `npm ci`, runs the tests with coverage, and uploads the coverage report.
 
 **Releases** (`.github/workflows/release.yml`): semantic-release runs on pushes to `main`, updates `CHANGELOG.md`, bumps the package version, and publishes the GitHub release.
 
@@ -317,13 +317,10 @@ The test suite currently contains 20 tests:
 ## Known Limitations
 This is a portfolio project, not a production-ready deployment. Current gaps:
 
-- **SQL Server entry point:** `src/server/mssqlServer.js` still imports `../repositories/movies.mssql.repository.js`, while the repository now lives under `src/repositories/mssql/`. `npm run dev:mssql` will not start until that import is corrected.
-- **Users/auth on SQL Server:** only PostgreSQL has a `UsersRepository`; the SQL Server entry point does not receive one.
-- **User 404 responses:** the users controller sends a 404 but does not `return` afterwards, so it attempts to send a second response.
-- **Refresh endpoint:** missing or invalid refresh tokens are currently wrapped as a 500 error, not a 401.
-- **Refresh cookie:** the cookie `maxAge` is 7 days while the refresh JWT expires in 1 day. The cookie is also always `secure`, including in development.
+- **Users/auth on SQL Server:** only PostgreSQL has a `UsersRepository`; the SQL Server entry point serves movies only, so `/auth` and `/user` do not work with it.
+- **Refresh cookie:** the cookie is always `secure`, so it is only sent over HTTPS, including in development.
 - **Genre seed mismatch:** `Comedy`, `Fantasy`, `Horror`, and `Thriller` are accepted by Zod but are not seeded in the `GENRE` table, so they will not be linked to movies.
-- **Rate limiter:** `src/app.js` registers the limiter twice, so the effective limit may be lower than the configured 20 requests per 15 minutes.
+- **Test coverage:** unit tests cover the PostgreSQL movie repository and the SQL Server error mapper; controllers and the auth service are not covered yet.
 
 ## Contributing
 Open an issue or pull request on [GitHub](https://github.com/joancubillo95/movies-api). For larger changes, describe the approach in an issue first.
