@@ -3,7 +3,7 @@
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![CI](https://github.com/joancubillo95/movies-api/actions/workflows/ci.yml/badge.svg)](https://github.com/joancubillo95/movies-api/actions/workflows/ci.yml)
 [![Release](https://img.shields.io/github/v/release/joancubillo95/movies-api?display_name=tag&sort=semver)](https://github.com/joancubillo95/movies-api/releases)
-[![Docker Image](https://img.shields.io/badge/docker-ready-blue)](https://github.com/joancubillo95/movies-api/Dockerfile)
+[![Docker Image](https://img.shields.io/badge/docker-ready-blue)](https://github.com/joancubillo95/movies-api/blob/main/Dockerfile)
 
 A Node.js REST API to manage movies — built as a portfolio project to practice layered API design, dual database support (PostgreSQL & SQL Server), authentication (API key + JWT), Docker, and Azure SQL integration.
 
