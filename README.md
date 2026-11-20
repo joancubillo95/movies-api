@@ -32,7 +32,7 @@ Based on Miguel Ángel Durán — [curso-node-js](https://github.com/midudev/cur
 - User lookup by ID or username (password hashes are never returned by public reads).
 - API key + JWT authentication with access and refresh tokens.
 - Role-based access (`admin` required for movie mutations and listing all users).
-- PostgreSQL and SQL Server movie repositories behind a shared repository pattern.
+- PostgreSQL and SQL Server repositories for movies and users behind a shared repository pattern.
 - OpenAPI/Swagger documentation at `/api/v1/api-docs`.
 - Validation with Zod, centralized error handling, rate limiting, and a health endpoint.
 - Vitest unit tests with coverage reporting in CI.
@@ -104,10 +104,9 @@ Run the SQL scripts in order for your chosen backend.
 1. `001_schema.sql`
 2. `002_views.sql`
 3. `003_stored_procedures.sql`
+4. `004_users.sql`
 
-PostgreSQL is the only backend with the users table and the users/auth repositories wired up. The SQL Server scripts only cover movies.
-
-Both schemas seed the same genres: `Drama`, `Action`, `Crime`, `Adventure`, `Sci-Fi`, and `Romance`.
+Both schemas cover the same movies, genres, movie-genre links, movies-with-genres view, genre update procedure, and users table. Both also seed the same genres: `Drama`, `Action`, `Crime`, `Adventure`, `Sci-Fi`, and `Romance`.
 
 ## Running
 | Command | Description |
@@ -301,6 +300,8 @@ npm start                     # Production start (PostgreSQL)
 Run `npx vitest run --coverage` for current results. Tests live in:
 
 - `tests/unit/db/pg/movies.postgres.repository.test.js` — PostgreSQL movie repository
+- `tests/unit/db/mssql/movies.mssql.repository.test.js` — SQL Server movie repository
+- `tests/unit/db/mssql/users.repository.test.js` — SQL Server users repository
 - `tests/unit/db/mssql/mssqlErrorMapper.test.js` — SQL Server error mapper
 
 **CI** (`.github/workflows/ci.yml`): runs on pushes to main and on all pull requests. It installs with `npm ci`, runs the tests with coverage, and uploads the coverage report.
