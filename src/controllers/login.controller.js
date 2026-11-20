@@ -13,25 +13,18 @@ export class LoginController {
             httpOnly: true,
             secure: true,
             sameSite: "strict",
-            maxAge: 7 * 24 * 60 * 60 * 1000,
+            maxAge: 24 * 60 * 60 * 1000,
             path: "/api/v1/auth"
         })
         res.json({ token, user })
     }
 
     refreshLogin = async (req, res) => {
-        try {
-            const { refreshToken } = req.cookies
-
-            if (!refreshToken) {
-                throw new AppError("Refresh token required", 401)
-            }
-
-            const { token, user } = await this.loginService.refreshLogin(refreshToken)
-
-            res.json({ token, user })
-        } catch (error) {
-            throw new AppError("Unexpected error trying to refresh token", 500, error)
+        const { refreshToken } = req.cookies
+        if (!refreshToken) {
+            throw new AppError("Refresh token required", 401)
         }
+        const { token, user } = await this.loginService.refreshLogin(refreshToken)
+        res.json({ token, user })
     }
 }

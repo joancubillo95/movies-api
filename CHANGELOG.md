@@ -1,0 +1,50 @@
+# [1.1.0](https://github.com/joancubillo95/movies-api/compare/v1.0.5...v1.1.0) (2026-11-20)
+
+
+### Features
+
+* add SQL Server users and auth support ([#23](https://github.com/joancubillo95/movies-api/issues/23)) ([f3eb5df](https://github.com/joancubillo95/movies-api/commit/f3eb5df53d172b52ddc719fcf60e45b3d679e88a))
+
+## [1.0.5](https://github.com/joancubillo95/movies-api/compare/v1.0.4...v1.0.5) (2026-11-19)
+
+
+### Bug Fixes
+
+* resolve known bugs in users, auth and mssql entry point ([#20](https://github.com/joancubillo95/movies-api/issues/20)) ([93616d3](https://github.com/joancubillo95/movies-api/commit/93616d3af90c1d3b27981f160d90eb98242acbb5))
+
+## [1.0.4](https://github.com/joancubillo95/movies-api/compare/v1.0.3...v1.0.4) (2026-11-14)
+
+
+### Bug Fixes
+
+* semantic release update readme file ([#19](https://github.com/joancubillo95/movies-api/issues/19)) ([b60fc09](https://github.com/joancubillo95/movies-api/commit/b60fc0944b83835a59681da95005783518d99444))
+
+## [1.0.3](https://github.com/joancubillo95/movies-api/compare/v1.0.2...v1.0.3) (2026-11-11)
+
+
+### Bug Fixes
+
+* dummy commit ([#18](https://github.com/joancubillo95/movies-api/issues/18)) ([a222674](https://github.com/joancubillo95/movies-api/commit/a2226746d1f94f4ec13764b9d807eeb3b13bfda8))
+
+## [1.0.2](https://github.com/joancubillo95/movies-api/compare/v1.0.1...v1.0.2) (2026-11-10)
+
+
+### Bug Fixes
+
+* update env example and readme file ([#16](https://github.com/joancubillo95/movies-api/issues/16)) ([04fe756](https://github.com/joancubillo95/movies-api/commit/04fe756bb8c3dce4457afe1d203285b32a502069))
+
+## [1.0.1](https://github.com/joancubillo95/movies-api/compare/v1.0.0...v1.0.1) (2026-11-10)
+
+
+### Bug Fixes
+
+* minor fix ([#15](https://github.com/joancubillo95/movies-api/issues/15)) ([c49bf2d](https://github.com/joancubillo95/movies-api/commit/c49bf2d93226e8ce2f3075866fdc37da083881dc))
+
+# 1.0.0 (2026-11-10)
+
+
+### Bug Fixes
+
+* file extension ([3cd8975](https://github.com/joancubillo95/movies-api/commit/3cd89752543084ff7eeb03b7ef122d549122fdce))
+* inject env at runtime and run Docker container as non-root ([67b227a](https://github.com/joancubillo95/movies-api/commit/67b227a55aba9b16778887122c6f210702d18f74))
+* update semantic versioning  ([#14](https://github.com/joancubillo95/movies-api/issues/14)) ([26a64fc](https://github.com/joancubillo95/movies-api/commit/26a64fcf40e3d0a36846bc091bf877b003074294))

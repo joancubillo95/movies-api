@@ -51,20 +51,17 @@ export class LoginService {
     }
 
     refreshLogin = async (refreshToken) => {
+        let payload
         try {
-            const payload = jwt.verify(
-                refreshToken,
-                process.env.JWT_SECRET
-            )
-
-            const user = await this.usersRepository.getById({
-                id: payload.id
-            })
-
-            return { token: this.generateToken(user), user }
+            payload = jwt.verify(refreshToken, process.env.JWT_SECRET)
         } catch (error) {
             throw new AppError("Invalid refresh token", 401, error)
         }
+        const user = await this.usersRepository.getById({ id: payload.id })
+        if (!user) {
+            throw new AppError("Invalid refresh token", 401)
+        }
+        return { token: this.generateToken(user), user }
     }
 }
 
