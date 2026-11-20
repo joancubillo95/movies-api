@@ -11,7 +11,7 @@ CREATE TABLE MOVIE (
     DIRECTOR VARCHAR (255) NOT NULL,
     DURATION INT NOT NULL,
     POSTER VARCHAR(255),
-    RATE DECIMAL(3,1) NOT NULL CONSTRAINT CK_MOVIES_RATE CHECK (RATE >= 0 AND RATE <= 10.0),
+    RATE DECIMAL(3,1) NOT NULL CONSTRAINT CK_MOVIES_RATE CHECK (RATE >= 0 AND RATE <= 10.0)
 );
 
 CREATE TABLE GENRE (
@@ -32,4 +32,5 @@ CREATE TABLE MOVIE_GENRES (
 );
 
 INSERT INTO GENRE (NAME) VALUES
-('Drama'), ('Action'), ('Crime'), ('Adventure'), ('Sci-Fi'), ('Romance');
+('Drama'), ('Action'), ('Crime'), ('Adventure'), ('Sci-Fi'), ('Romance'),
+('Comedy'), ('Fantasy'), ('Horror'), ('Thriller');

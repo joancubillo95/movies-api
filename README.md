@@ -7,8 +7,6 @@
 
 A Node.js REST API to manage movies — built as a portfolio project to practice layered API design, dual database support (PostgreSQL & SQL Server), authentication (API key + JWT), Docker, and Azure SQL integration.
 
-A SQL Server repository exists, but its entry point only serves movies (no users or auth) — see [Known Limitations](#known-limitations).
-
 Based on Miguel Ángel Durán — [curso-node-js](https://github.com/midudev/curso-node-js).
 
 ## Table of Contents
@@ -32,7 +30,7 @@ Based on Miguel Ángel Durán — [curso-node-js](https://github.com/midudev/cur
 - User lookup by ID or username (password hashes are never returned by public reads).
 - API key + JWT authentication with access and refresh tokens.
 - Role-based access (`admin` required for movie mutations and listing all users).
-- PostgreSQL and SQL Server movie repositories behind a shared repository pattern.
+- PostgreSQL and SQL Server repositories for movies and users behind a shared repository pattern.
 - OpenAPI/Swagger documentation at `/api/v1/api-docs`.
 - Validation with Zod, centralized error handling, rate limiting, and a health endpoint.
 - Vitest unit tests with coverage reporting in CI.
@@ -70,7 +68,7 @@ cp .env.example .env
 # PostgreSQL (default and recommended)
 npm run dev:pg
 
-# SQL Server (movies only, no users/auth — see Known Limitations)
+# SQL Server
 npm run dev:mssql
 ```
 
@@ -104,16 +102,15 @@ Run the SQL scripts in order for your chosen backend.
 1. `001_schema.sql`
 2. `002_views.sql`
 3. `003_stored_procedures.sql`
+4. `004_users.sql`
 
-PostgreSQL is the only backend with the users table and the users/auth repositories wired up. The SQL Server scripts only cover movies.
-
-Both schemas seed the same genres: `Drama`, `Action`, `Crime`, `Adventure`, `Sci-Fi`, and `Romance`.
+Both schemas cover the same movies, genres, movie-genre links, movies-with-genres view, genre update procedure, and users table. Both also seed the same genres: `Drama`, `Action`, `Crime`, `Adventure`, `Sci-Fi`, and `Romance`.
 
 ## Running
 | Command | Description |
 |---------|-------------|
 | `npm run dev:pg` | Start with nodemon (PostgreSQL) |
-| `npm run dev:mssql` | SQL Server entry point — movies only, no users/auth, see [Known Limitations](#known-limitations) |
+| `npm run dev:mssql` | SQL Server entry point |
 | `npm start` | Start in production mode (PostgreSQL) |
 | `npm test` | Run Vitest in watch mode |
 | `npx vitest run --coverage` | Run the test suite once and print coverage |
@@ -294,13 +291,15 @@ Rate limiting is configured globally for 20 requests per 15-minute window per IP
 npm test                      # Vitest watch mode
 npx vitest run --coverage     # One-off test run with coverage
 npm run dev:pg                # Development server (PostgreSQL)
-npm run dev:mssql             # SQL Server entry point (movies only, no users/auth)
+npm run dev:mssql             # SQL Server entry point
 npm start                     # Production start (PostgreSQL)
 ```
 
 Run `npx vitest run --coverage` for current results. Tests live in:
 
 - `tests/unit/db/pg/movies.postgres.repository.test.js` — PostgreSQL movie repository
+- `tests/unit/db/mssql/movies.mssql.repository.test.js` — SQL Server movie repository
+- `tests/unit/db/mssql/users.repository.test.js` — SQL Server users repository
 - `tests/unit/db/mssql/mssqlErrorMapper.test.js` — SQL Server error mapper
 
 **CI** (`.github/workflows/ci.yml`): runs on pushes to main and on all pull requests. It installs with `npm ci`, runs the tests with coverage, and uploads the coverage report.
@@ -316,10 +315,7 @@ Run `npx vitest run --coverage` for current results. Tests live in:
 
 ## Known Limitations
 This is a portfolio project, not a production-ready deployment. Current gaps:
-
-- **Users/auth on SQL Server:** only PostgreSQL has a `UsersRepository`; the SQL Server entry point serves movies only, so `/auth` and `/user` do not work with it.
 - **Refresh cookie:** the cookie is always `secure`, so it is only sent over HTTPS, including in development.
-- **Genre seed mismatch:** `Comedy`, `Fantasy`, `Horror`, and `Thriller` are accepted by Zod but are not seeded in the `GENRE` table, so they will not be linked to movies.
 - **Test coverage:** unit tests cover the PostgreSQL movie repository and the SQL Server error mapper; controllers and the auth service are not covered yet.
 
 ## Contributing
