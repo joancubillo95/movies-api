@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/joancubillo95/movies-api/compare/v1.0.5...v1.1.0) (2026-11-20)
+
+
+### Features
+
+* add SQL Server users and auth support ([#23](https://github.com/joancubillo95/movies-api/issues/23)) ([f3eb5df](https://github.com/joancubillo95/movies-api/commit/f3eb5df53d172b52ddc719fcf60e45b3d679e88a))
+
 ## [1.0.5](https://github.com/joancubillo95/movies-api/compare/v1.0.4...v1.0.5) (2026-11-19)
 
 
