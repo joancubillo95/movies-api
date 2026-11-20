@@ -7,8 +7,6 @@
 
 A Node.js REST API to manage movies — built as a portfolio project to practice layered API design, dual database support (PostgreSQL & SQL Server), authentication (API key + JWT), Docker, and Azure SQL integration.
 
-A SQL Server repository exists, but its entry point only serves movies (no users or auth) — see [Known Limitations](#known-limitations).
-
 Based on Miguel Ángel Durán — [curso-node-js](https://github.com/midudev/curso-node-js).
 
 ## Table of Contents
@@ -70,7 +68,7 @@ cp .env.example .env
 # PostgreSQL (default and recommended)
 npm run dev:pg
 
-# SQL Server (movies only, no users/auth — see Known Limitations)
+# SQL Server
 npm run dev:mssql
 ```
 
@@ -112,7 +110,7 @@ Both schemas cover the same movies, genres, movie-genre links, movies-with-genre
 | Command | Description |
 |---------|-------------|
 | `npm run dev:pg` | Start with nodemon (PostgreSQL) |
-| `npm run dev:mssql` | SQL Server entry point — movies only, no users/auth, see [Known Limitations](#known-limitations) |
+| `npm run dev:mssql` | SQL Server entry point |
 | `npm start` | Start in production mode (PostgreSQL) |
 | `npm test` | Run Vitest in watch mode |
 | `npx vitest run --coverage` | Run the test suite once and print coverage |
@@ -293,7 +291,7 @@ Rate limiting is configured globally for 20 requests per 15-minute window per IP
 npm test                      # Vitest watch mode
 npx vitest run --coverage     # One-off test run with coverage
 npm run dev:pg                # Development server (PostgreSQL)
-npm run dev:mssql             # SQL Server entry point (movies only, no users/auth)
+npm run dev:mssql             # SQL Server entry point
 npm start                     # Production start (PostgreSQL)
 ```
 
@@ -317,10 +315,7 @@ Run `npx vitest run --coverage` for current results. Tests live in:
 
 ## Known Limitations
 This is a portfolio project, not a production-ready deployment. Current gaps:
-
-- **Users/auth on SQL Server:** only PostgreSQL has a `UsersRepository`; the SQL Server entry point serves movies only, so `/auth` and `/user` do not work with it.
 - **Refresh cookie:** the cookie is always `secure`, so it is only sent over HTTPS, including in development.
-- **Genre seed mismatch:** `Comedy`, `Fantasy`, `Horror`, and `Thriller` are accepted by Zod but are not seeded in the `GENRE` table, so they will not be linked to movies.
 - **Test coverage:** unit tests cover the PostgreSQL movie repository and the SQL Server error mapper; controllers and the auth service are not covered yet.
 
 ## Contributing
