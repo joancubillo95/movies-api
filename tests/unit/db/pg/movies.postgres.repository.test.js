@@ -8,15 +8,15 @@ const createPool = (query) => ({ query })
 
 const createTransaction = (query) => ({
     query,
-    release: vi.fn().mockResolvedValue(),
+    release: vi.fn().mockResolvedValue()
 })
 
 const createRepository = (pool) => {
     const database = {
-        getPool: vi.fn().mockResolvedValue(pool),
+        getPool: vi.fn().mockResolvedValue(pool)
     }
     const errorMapper = {
-        map: vi.fn((error) => error),
+        map: vi.fn((error) => error)
     }
     const repository = new MoviesRepository(database, errorMapper)
 
@@ -30,22 +30,19 @@ describe("MoviesRepository.getById", () => {
                 {
                     id: MOVIE_ID,
                     title: "The Matrix",
-                    genre: "Action,Sci-Fi",
-                },
-            ],
+                    genre: "Action,Sci-Fi"
+                }
+            ]
         })
         const { repository } = createRepository(createPool(query))
 
         const movie = await repository.getById(MOVIE_ID)
 
-        expect(query).toHaveBeenCalledWith(
-            "SELECT * FROM VW_MOVIES_WITH_GENRES WHERE ID = $1",
-            [MOVIE_ID],
-        )
+        expect(query).toHaveBeenCalledWith("SELECT * FROM VW_MOVIES_WITH_GENRES WHERE ID = $1", [MOVIE_ID])
         expect(movie).toEqual({
             id: MOVIE_ID,
             title: "The Matrix",
-            genre: ["Action", "Sci-Fi"],
+            genre: ["Action", "Sci-Fi"]
         })
     })
 
@@ -75,17 +72,15 @@ describe("MoviesRepository.getAll", () => {
                 {
                     id: MOVIE_ID,
                     title: "The Matrix",
-                    genre: "Action,Sci-Fi",
-                },
-            ],
+                    genre: "Action,Sci-Fi"
+                }
+            ]
         })
         const { repository } = createRepository(createPool(query))
 
         const movies = await repository.getAll()
 
-        expect(query).toHaveBeenCalledWith(
-            "SELECT * FROM VW_MOVIES_WITH_GENRES"
-        )
+        expect(query).toHaveBeenCalledWith("SELECT * FROM VW_MOVIES_WITH_GENRES")
         expect(movies).toEqual([
             {
                 id: MOVIE_ID,
@@ -122,7 +117,7 @@ describe("MoviesRepository.create", () => {
         duration: 136,
         rate: 8.7,
         poster: "the-matrix.jpg",
-        genre: ["Action", "Sci-Fi"],
+        genre: ["Action", "Sci-Fi"]
     }
 
     const createClient = () => ({
@@ -140,14 +135,14 @@ describe("MoviesRepository.create", () => {
                             director: input.director,
                             duration: input.duration,
                             rate: input.rate,
-                            poster: input.poster,
-                        },
-                    ],
+                            poster: input.poster
+                        }
+                    ]
                 }
             }
             return { rows: [] }
         }),
-        release: vi.fn().mockResolvedValue(),
+        release: vi.fn().mockResolvedValue()
     })
 
     it("inserts the movie and its genres in a transaction", async () => {
@@ -161,23 +156,15 @@ describe("MoviesRepository.create", () => {
         expect(client.query).toHaveBeenCalledWith("SELECT GEN_RANDOM_UUID() ID")
         expect(client.query).toHaveBeenCalledWith(
             "INSERT INTO MOVIE (ID, TITLE, YEAR, DIRECTOR, DURATION, RATE, POSTER) VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING *",
-            [
-                MOVIE_ID,
-                input.title,
-                input.year,
-                input.director,
-                input.duration,
-                input.rate,
-                input.poster,
-            ],
+            [MOVIE_ID, input.title, input.year, input.director, input.duration, input.rate, input.poster]
         )
         expect(client.query).toHaveBeenCalledWith(
             "INSERT INTO MOVIE_GENRES (MOVIE_ID, GENRE_ID) VALUES ($1, (SELECT ID FROM GENRE WHERE LOWER(NAME) = $2))",
-            [MOVIE_ID, "action"],
+            [MOVIE_ID, "action"]
         )
         expect(client.query).toHaveBeenCalledWith(
             "INSERT INTO MOVIE_GENRES (MOVIE_ID, GENRE_ID) VALUES ($1, (SELECT ID FROM GENRE WHERE LOWER(NAME) = $2))",
-            [MOVIE_ID, "sci-fi"],
+            [MOVIE_ID, "sci-fi"]
         )
         expect(client.query).toHaveBeenCalledWith("COMMIT")
         expect(client.release).toHaveBeenCalledTimes(1)
@@ -189,7 +176,7 @@ describe("MoviesRepository.create", () => {
             duration: input.duration,
             rate: input.rate,
             poster: input.poster,
-            genre: ["Action", "Sci-Fi"],
+            genre: ["Action", "Sci-Fi"]
         })
     })
 
@@ -199,12 +186,10 @@ describe("MoviesRepository.create", () => {
         const { repository } = createRepository(pool)
 
         const movie = await repository.create({
-            input: { ...input, genre: [] },
+            input: { ...input, genre: [] }
         })
 
-        const genreInserts = client.query.mock.calls.filter(([sql]) =>
-            sql.includes("INSERT INTO MOVIE_GENRES")
-        )
+        const genreInserts = client.query.mock.calls.filter(([sql]) => sql.includes("INSERT INTO MOVIE_GENRES"))
         expect(genreInserts).toHaveLength(0)
         expect(client.query).toHaveBeenCalledWith("COMMIT")
         expect(movie.genre).toEqual([])
@@ -222,7 +207,7 @@ describe("MoviesRepository.create", () => {
                 }
                 return { rows: [] }
             }),
-            release: vi.fn().mockResolvedValue(),
+            release: vi.fn().mockResolvedValue()
         }
         const pool = { connect: vi.fn().mockResolvedValue(client) }
         const { repository, errorMapper } = createRepository(pool)
@@ -242,7 +227,7 @@ describe("MoviesRepository.update", () => {
         duration: 136,
         rate: 8.7,
         poster: "the-matrix.jpg",
-        genre: ["Action", "Sci-Fi"],
+        genre: ["Action", "Sci-Fi"]
     }
 
     it("updates all provided fields and genres", async () => {
@@ -256,20 +241,9 @@ describe("MoviesRepository.update", () => {
         expect(query).toHaveBeenCalledWith("BEGIN")
         expect(query).toHaveBeenCalledWith(
             "UPDATE MOVIE SET TITLE = $2,YEAR = $3,DIRECTOR = $4,DURATION = $5,RATE = $6,POSTER = $7 WHERE ID = $1",
-            [
-                MOVIE_ID,
-                input.title,
-                input.year,
-                input.director,
-                input.duration,
-                input.rate,
-                input.poster,
-            ],
+            [MOVIE_ID, input.title, input.year, input.director, input.duration, input.rate, input.poster]
         )
-        expect(query).toHaveBeenCalledWith(
-            "CALL SP_UPDATE_MOVIE_GENRES($1, $2)",
-            [MOVIE_ID, "Action,Sci-Fi"],
-        )
+        expect(query).toHaveBeenCalledWith("CALL SP_UPDATE_MOVIE_GENRES($1, $2)", [MOVIE_ID, "Action,Sci-Fi"])
         expect(query).toHaveBeenCalledWith("COMMIT")
         expect(transaction.release).toHaveBeenCalledTimes(1)
         expect(rowsAffected).toBe(2)
@@ -283,17 +257,14 @@ describe("MoviesRepository.update", () => {
 
         const rowsAffected = await repository.update({
             id: MOVIE_ID,
-            input: { title: "The Matrix Reloaded" },
+            input: { title: "The Matrix Reloaded" }
         })
 
-        expect(query).toHaveBeenCalledWith(
-            "UPDATE MOVIE SET TITLE = $2 WHERE ID = $1",
-            [MOVIE_ID, "The Matrix Reloaded"],
-        )
-        expect(query).not.toHaveBeenCalledWith(
-            "CALL SP_UPDATE_MOVIE_GENRES($1, $2)",
-            expect.anything(),
-        )
+        expect(query).toHaveBeenCalledWith("UPDATE MOVIE SET TITLE = $2 WHERE ID = $1", [
+            MOVIE_ID,
+            "The Matrix Reloaded"
+        ])
+        expect(query).not.toHaveBeenCalledWith("CALL SP_UPDATE_MOVIE_GENRES($1, $2)", expect.anything())
         expect(query).toHaveBeenCalledWith("COMMIT")
         expect(rowsAffected).toBe(1)
     })
@@ -306,17 +277,11 @@ describe("MoviesRepository.update", () => {
 
         const rowsAffected = await repository.update({
             id: MOVIE_ID,
-            input: { genre: ["Action"] },
+            input: { genre: ["Action"] }
         })
 
-        expect(query).not.toHaveBeenCalledWith(
-            expect.stringContaining("UPDATE MOVIE SET"),
-            expect.anything(),
-        )
-        expect(query).toHaveBeenCalledWith(
-            "CALL SP_UPDATE_MOVIE_GENRES($1, $2)",
-            [MOVIE_ID, "Action"],
-        )
+        expect(query).not.toHaveBeenCalledWith(expect.stringContaining("UPDATE MOVIE SET"), expect.anything())
+        expect(query).toHaveBeenCalledWith("CALL SP_UPDATE_MOVIE_GENRES($1, $2)", [MOVIE_ID, "Action"])
         expect(query).toHaveBeenCalledWith("COMMIT")
         expect(rowsAffected).toBe(1)
     })
@@ -329,17 +294,14 @@ describe("MoviesRepository.update", () => {
 
         const rowsAffected = await repository.update({
             id: MOVIE_ID,
-            input: { title: "The Matrix Reloaded", genre: [] },
+            input: { title: "The Matrix Reloaded", genre: [] }
         })
 
-        expect(query).toHaveBeenCalledWith(
-            "UPDATE MOVIE SET TITLE = $2 WHERE ID = $1",
-            [MOVIE_ID, "The Matrix Reloaded"],
-        )
-        expect(query).not.toHaveBeenCalledWith(
-            "CALL SP_UPDATE_MOVIE_GENRES($1, $2)",
-            expect.anything(),
-        )
+        expect(query).toHaveBeenCalledWith("UPDATE MOVIE SET TITLE = $2 WHERE ID = $1", [
+            MOVIE_ID,
+            "The Matrix Reloaded"
+        ])
+        expect(query).not.toHaveBeenCalledWith("CALL SP_UPDATE_MOVIE_GENRES($1, $2)", expect.anything())
         expect(rowsAffected).toBe(1)
     })
 
@@ -349,8 +311,7 @@ describe("MoviesRepository.update", () => {
         const pool = { connect: vi.fn().mockResolvedValue(transaction) }
         const { repository } = createRepository(pool)
 
-        await expect(repository.update({ id: MOVIE_ID, input: {} }))
-            .rejects.toThrow("Nothing to update")
+        await expect(repository.update({ id: MOVIE_ID, input: {} })).rejects.toThrow("Nothing to update")
         expect(query).toHaveBeenCalledWith("ROLLBACK")
         expect(transaction.release).toHaveBeenCalledTimes(1)
     })
@@ -361,15 +322,15 @@ describe("MoviesRepository.update", () => {
         const pool = { connect: vi.fn().mockResolvedValue(transaction) }
         const { repository } = createRepository(pool)
 
-        await expect(repository.update({ id: MOVIE_ID, input: { genre: [] } }))
-            .rejects.toThrow("Nothing to update")
+        await expect(repository.update({ id: MOVIE_ID, input: { genre: [] } })).rejects.toThrow("Nothing to update")
         expect(query).toHaveBeenCalledWith("ROLLBACK")
         expect(transaction.release).toHaveBeenCalledTimes(1)
     })
 
     it("rolls back and releases the transaction when a query fails", async () => {
         const error = new Error("update failed")
-        const query = vi.fn()
+        const query = vi
+            .fn()
             .mockResolvedValueOnce({ rowCount: 0 })
             .mockRejectedValueOnce(error)
             .mockResolvedValue({ rowCount: 0 })
@@ -377,9 +338,7 @@ describe("MoviesRepository.update", () => {
         const pool = { connect: vi.fn().mockResolvedValue(transaction) }
         const { repository, errorMapper } = createRepository(pool)
 
-        await expect(
-            repository.update({ id: MOVIE_ID, input: { title: "The Matrix" } }),
-        ).rejects.toBe(error)
+        await expect(repository.update({ id: MOVIE_ID, input: { title: "The Matrix" } })).rejects.toBe(error)
         expect(query).toHaveBeenCalledWith("ROLLBACK")
         expect(transaction.release).toHaveBeenCalledTimes(1)
         expect(errorMapper.map).toHaveBeenCalledWith(error)
@@ -393,10 +352,7 @@ describe("MoviesRepository.delete", () => {
 
         const result = await repository.delete({ id: MOVIE_ID })
 
-        expect(query).toHaveBeenCalledWith(
-            "DELETE FROM MOVIE WHERE ID = $1",
-            [MOVIE_ID],
-        )
+        expect(query).toHaveBeenCalledWith("DELETE FROM MOVIE WHERE ID = $1", [MOVIE_ID])
         expect(result).toBe(true)
     })
 

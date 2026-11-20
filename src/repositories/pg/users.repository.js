@@ -1,14 +1,17 @@
-import { AppError } from "../../utils/appError.js";
-import { BaseRepository } from "../base.repository.js";
-import { PgDatabase } from "../../config/postgresSqlConnection.js";
+import { AppError } from "../../utils/appError.js"
+import { BaseRepository } from "../base.repository.js"
+import { PgDatabase } from "../../config/postgresSqlConnection.js"
 import { PostgresErrorMapper } from "../../utils/ErrorMappers/postgresErrorMapper.js"
 
 export class UsersRepository extends BaseRepository {
-
     login = async ({ username }) => {
         try {
             const pool = await this.database.getPool()
-            const [user] = (await pool.query("SELECT id, username, role, password_hash FROM USERS WHERE UPPER(USERNAME) = $1", [username.toUpperCase()])).rows
+            const [user] = (
+                await pool.query("SELECT id, username, role, password_hash FROM USERS WHERE UPPER(USERNAME) = $1", [
+                    username.toUpperCase()
+                ])
+            ).rows
             return user
         } catch (error) {
             throw this.errorMapper.map(error)
@@ -18,7 +21,11 @@ export class UsersRepository extends BaseRepository {
     getByUsername = async ({ username }) => {
         try {
             const pool = await this.database.getPool()
-            const [user] = (await pool.query("SELECT id, username, role FROM USERS WHERE UPPER(USERNAME) = $1", [username.toUpperCase()])).rows
+            const [user] = (
+                await pool.query("SELECT id, username, role FROM USERS WHERE UPPER(USERNAME) = $1", [
+                    username.toUpperCase()
+                ])
+            ).rows
             return user
         } catch (error) {
             throw this.errorMapper.map(error)
@@ -45,5 +52,4 @@ export class UsersRepository extends BaseRepository {
             throw this.errorMapper.map(error)
         }
     }
-
 }

@@ -16,7 +16,7 @@ const config = {
         min: 0,
         idleTimeoutMillis: 20000
     }
-};
+}
 
 export class MssqlDatabase {
     constructor() {
@@ -30,19 +30,17 @@ export class MssqlDatabase {
         }
 
         if (!this.poolPromise) {
-            this.poolPromise = new sql.ConnectionPool(config)
-                .connect()
-                .then(pool => {
-                    this.pool = pool
-                    return pool
-                })
+            this.poolPromise = new sql.ConnectionPool(config).connect().then((pool) => {
+                this.pool = pool
+                return pool
+            })
         }
 
         return this.poolPromise
     }
 
     createTransaction = async () => {
-        const pool = this.pool ?? await this.getPool()
+        const pool = this.pool ?? (await this.getPool())
         return new sql.Transaction(pool)
     }
 
@@ -51,6 +49,5 @@ export class MssqlDatabase {
             await this.pool.close()
             this.pool = null
         }
-
     }
 }

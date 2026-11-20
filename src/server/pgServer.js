@@ -9,5 +9,4 @@ const errorMapper = new PostgresErrorMapper()
 const moviesRepository = new MoviesRepository(database, errorMapper)
 const usersRepository = new UsersRepository(database, errorMapper)
 
-
 CreateApp({ moviesRepository: moviesRepository, usersRepository: usersRepository, database: database })

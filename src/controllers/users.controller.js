@@ -28,6 +28,4 @@ export class UsersController {
         }
         res.json(users)
     }
-
-
 }

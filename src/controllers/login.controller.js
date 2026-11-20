@@ -6,7 +6,6 @@ export class LoginController {
     }
 
     login = async (req, res) => {
-
         const { username, password } = req.body
         const { token, refreshToken, user } = await this.loginService.validateLogin(username, password)
         res.cookie("refreshToken", refreshToken, {

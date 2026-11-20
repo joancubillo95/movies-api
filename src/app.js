@@ -7,7 +7,7 @@ import { MssqlDatabase } from "./config/mssqlConnection.js"
 import { PgDatabase } from "./config/postgresSqlConnection.js"
 import { PostgresErrorMapper } from "./utils/ErrorMappers/postgresErrorMapper.js"
 import { authenticateJWT } from "./middlewares/auth.js"
-import cookieParser from "cookie-parser";
+import cookieParser from "cookie-parser"
 import cors from "cors"
 import { corsMiddleware } from "./middlewares/cors.js"
 import { createHealthRouter } from "./routes/health.router.js"
@@ -52,6 +52,6 @@ export const CreateApp = ({ moviesRepository, usersRepository, database }) => {
         })
     }
 
-    process.on('SIGINT', shutdown)
-    process.on('SIGTERM', shutdown)
+    process.on("SIGINT", shutdown)
+    process.on("SIGTERM", shutdown)
 }

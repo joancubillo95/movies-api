@@ -3,7 +3,6 @@ import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
 
 export class LoginService {
-
     constructor(usersRepository) {
         this.usersRepository = usersRepository
     }
@@ -37,7 +36,7 @@ export class LoginService {
             },
             process.env.JWT_SECRET,
             { expiresIn: "10m" }
-        );
+        )
     }
 
     generateRefreshToken = (user) => {
@@ -47,7 +46,7 @@ export class LoginService {
             },
             process.env.JWT_SECRET,
             { expiresIn: "1d" }
-        );
+        )
     }
 
     refreshLogin = async (refreshToken) => {
@@ -64,5 +63,3 @@ export class LoginService {
         return { token: this.generateToken(user), user }
     }
 }
-
-

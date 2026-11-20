@@ -1,9 +1,9 @@
-import { AppError } from "../../utils/appError.js";
-import { BaseRepository } from "../base.repository.js";
-import { MssqlDatabase } from "../../config/mssqlConnection.js";
-import { MssqlErrorMapper } from "../../utils/ErrorMappers/mssqlErrorMapper.js";
-import { PgDatabase } from "../../config/postgresSqlConnection.js";
-import { PostgresErrorMapper } from "../../utils/ErrorMappers/postgresErrorMapper.js";
+import { AppError } from "../../utils/appError.js"
+import { BaseRepository } from "../base.repository.js"
+import { MssqlDatabase } from "../../config/mssqlConnection.js"
+import { MssqlErrorMapper } from "../../utils/ErrorMappers/mssqlErrorMapper.js"
+import { PgDatabase } from "../../config/postgresSqlConnection.js"
+import { PostgresErrorMapper } from "../../utils/ErrorMappers/postgresErrorMapper.js"
 import sql from "mssql"
 
 export class MoviesRepository extends BaseRepository {
@@ -11,10 +11,10 @@ export class MoviesRepository extends BaseRepository {
         try {
             const pool = await this.database.getPool()
             let movies = (await pool.request().query("SELECT * FROM VW_MOVIES_WITH_GENRES")).recordset
-            movies = movies.map(movie => ({
+            movies = movies.map((movie) => ({
                 ...movie,
                 GENRE: movie.GENRE.split(",")
-            }));
+            }))
             return movies
         } catch (error) {
             throw this.errorMapper.map(error)
@@ -22,22 +22,15 @@ export class MoviesRepository extends BaseRepository {
     }
 
     create = async ({ input }) => {
-        const {
-            title,
-            year,
-            director,
-            duration,
-            rate,
-            poster,
-            genre: genreInput
-        } = input
+        const { title, year, director, duration, rate, poster, genre: genreInput } = input
         const transac = await this.database.createTransaction()
         await transac.begin()
         try {
             const newIdResult = await transac.request().query("SELECT NEWID() ID")
             const [{ ID: newId }] = newIdResult.recordset
 
-            await transac.request()
+            await transac
+                .request()
                 .input("Id", newId)
                 .input("Title", title)
                 .input("Year", year)
@@ -45,8 +38,10 @@ export class MoviesRepository extends BaseRepository {
                 .input("Duration", duration)
                 .input("Rate", rate)
                 .input("Poster", poster)
-                .query("INSERT INTO MOVIE (ID, TITLE, YEAR, DIRECTOR, DURATION, RATE, POSTER)"
-                    + " VALUES(@Id, @title, @year, @director, @duration, @rate, @poster)")
+                .query(
+                    "INSERT INTO MOVIE (ID, TITLE, YEAR, DIRECTOR, DURATION, RATE, POSTER)" +
+                        " VALUES(@Id, @title, @year, @director, @duration, @rate, @poster)"
+                )
 
             for (const genre of genreInput) {
                 const lowerGenre = genre.toLowerCase()
@@ -54,12 +49,12 @@ export class MoviesRepository extends BaseRepository {
                     .request()
                     .input("MovieId", newId)
                     .input("Genre", lowerGenre)
-                    .query("INSERT INTO MOVIE_GENRES (MOVIE_ID, GENRE_ID) VALUES (@MovieId, (SELECT ID FROM GENRE WHERE LOWER(NAME) = @Genre))")
+                    .query(
+                        "INSERT INTO MOVIE_GENRES (MOVIE_ID, GENRE_ID) VALUES (@MovieId, (SELECT ID FROM GENRE WHERE LOWER(NAME) = @Genre))"
+                    )
             }
 
-            let newMovie = await transac.request()
-                .input("Id", newId)
-                .query("SELECT * FROM MOVIE WHERE ID = @Id")
+            let newMovie = await transac.request().input("Id", newId).query("SELECT * FROM MOVIE WHERE ID = @Id")
 
             await transac.commit()
             newMovie = { ...newMovie.recordset[0], GENRE: genreInput }
@@ -71,15 +66,7 @@ export class MoviesRepository extends BaseRepository {
     }
 
     update = async ({ id, input }) => {
-        const {
-            title,
-            year,
-            director,
-            duration,
-            rate,
-            poster,
-            genre: genreInput
-        } = input
+        const { title, year, director, duration, rate, poster, genre: genreInput } = input
         const transaction = await this.database.createTransaction()
         await transaction.begin()
         try {
@@ -113,11 +100,9 @@ export class MoviesRepository extends BaseRepository {
             if (updates.length == 0 && !genreInput) {
                 throw new Error("Nothing to update")
             } else if (updates.length >= 1) {
-                const { rowsAffected } = await request
-                    .query("UPDATE MOVIE"
-                        + ` SET ${(updates.join(","))} `
-                        + " WHERE ID = @ID"
-                    )
+                const { rowsAffected } = await request.query(
+                    "UPDATE MOVIE" + ` SET ${updates.join(",")} ` + " WHERE ID = @ID"
+                )
                 const [movieRows] = rowsAffected
             }
 
@@ -138,7 +123,8 @@ export class MoviesRepository extends BaseRepository {
 
     delete = async ({ id }) => {
         try {
-            const result = await this.database.getPool()
+            const result = await this.database
+                .getPool()
                 .request()
                 .input("Id", id)
                 .query("DELETE FROM MOVIE WHERE ID = @Id")

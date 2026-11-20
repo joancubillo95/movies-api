@@ -1,4 +1,4 @@
-import "dotenv/config";
+import "dotenv/config"
 
 import pg from "pg"
 
@@ -7,7 +7,7 @@ const config = {
     password: process.env.DB_PASSWORD,
     host: process.env.DB_HOST,
     port: Number.parseInt(process.env.DB_PORT),
-    database: process.env.DB_DATABASE,
+    database: process.env.DB_DATABASE
 }
 
 export class PgDatabase {

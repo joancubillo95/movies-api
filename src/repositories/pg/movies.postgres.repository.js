@@ -11,7 +11,7 @@ export class MoviesRepository extends BaseRepository {
             if (!movies) {
                 return null
             }
-            movies = movies.map(movie => ({
+            movies = movies.map((movie) => ({
                 ...movie,
                 genre: movie.genre.split(",")
             }))
@@ -19,7 +19,6 @@ export class MoviesRepository extends BaseRepository {
         } catch (error) {
             throw this.errorMapper.map(error)
         }
-
     }
     getById = async (id) => {
         try {
@@ -38,19 +37,10 @@ export class MoviesRepository extends BaseRepository {
         } catch (error) {
             throw this.errorMapper.map(error)
         }
-
     }
 
     create = async ({ input }) => {
-        const {
-            title,
-            year,
-            director,
-            duration,
-            rate,
-            poster,
-            genre: genreInput
-        } = input
+        const { title, year, director, duration, rate, poster, genre: genreInput } = input
 
         let query = ""
         let values = []
@@ -61,15 +51,17 @@ export class MoviesRepository extends BaseRepository {
             await client.query("BEGIN")
             const [{ id: newId }] = (await client.query("SELECT GEN_RANDOM_UUID() ID")).rows
 
-            query = "INSERT INTO MOVIE (ID, TITLE, YEAR, DIRECTOR, DURATION, RATE, POSTER)"
-                + " VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING *"
+            query =
+                "INSERT INTO MOVIE (ID, TITLE, YEAR, DIRECTOR, DURATION, RATE, POSTER)" +
+                " VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING *"
             values = [newId, title, year, director, duration, rate, poster]
 
             const res = await client.query(query, values)
 
             for (const genre of genreInput) {
                 const lowerGenre = genre.toLowerCase()
-                query = "INSERT INTO MOVIE_GENRES (MOVIE_ID, GENRE_ID) VALUES ($1, (SELECT ID FROM GENRE WHERE LOWER(NAME) = $2))"
+                query =
+                    "INSERT INTO MOVIE_GENRES (MOVIE_ID, GENRE_ID) VALUES ($1, (SELECT ID FROM GENRE WHERE LOWER(NAME) = $2))"
                 values = [newId, lowerGenre]
                 await client.query(query, values)
             }
@@ -83,23 +75,14 @@ export class MoviesRepository extends BaseRepository {
         } catch (error) {
             await client.query("ROLLBACK")
             throw this.errorMapper.map(error)
-
         } finally {
             await client.release()
         }
     }
 
     update = async ({ id, input }) => {
-        const {
-            title,
-            year,
-            director,
-            duration,
-            rate,
-            poster,
-            genre: genreInput
-        } = input
-        let rowsAffected = 0;
+        const { title, year, director, duration, rate, poster, genre: genreInput } = input
+        let rowsAffected = 0
         const pool = await this.database.getPool()
         const transaction = await pool.connect()
 
@@ -135,13 +118,18 @@ export class MoviesRepository extends BaseRepository {
             if (values.length === 1 && (!genreInput || genreInput.length === 0)) {
                 throw new Error("Nothing to update")
             } else if (values.length > 1) {
-
-                const result = await transaction.query("UPDATE MOVIE SET " + updateColumns.join(",") + " WHERE ID = $1", values)
+                const result = await transaction.query(
+                    "UPDATE MOVIE SET " + updateColumns.join(",") + " WHERE ID = $1",
+                    values
+                )
                 rowsAffected += result.rowCount
             }
 
             if (genreInput && genreInput.length > 0) {
-                const result = await transaction.query("CALL SP_UPDATE_MOVIE_GENRES($1, $2)", [id, genreInput.join(",")])
+                const result = await transaction.query("CALL SP_UPDATE_MOVIE_GENRES($1, $2)", [
+                    id,
+                    genreInput.join(",")
+                ])
                 rowsAffected += result.rowCount
             }
             await transaction.query("COMMIT")

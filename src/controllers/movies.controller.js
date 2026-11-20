@@ -62,7 +62,7 @@ export class MoviesController {
         const { id } = req.params
         const deleted = await this.moviesRepository.delete({ id })
         if (!deleted) {
-            return res.status(404).json({ message: 'Movie not found' })
+            return res.status(404).json({ message: "Movie not found" })
         }
         return res.status(204).end()
     }

@@ -1,20 +1,20 @@
 import { authSwagger, moviesSwagger, userSwagger } from "../utils/yamlParser.js"
 
-import swaggerJsDoc from "swagger-jsdoc";
+import swaggerJsDoc from "swagger-jsdoc"
 
 export const createSwaggerDocs = (url) => {
     const swaggerOptions = {
         swaggerDefinition: {
-            openapi: '3.0.0',
+            openapi: "3.0.0",
             info: {
-                title: 'Movies API',
+                title: "Movies API",
                 version: "0.3.2",
-                description: 'API documentation',
+                description: "API documentation"
             },
             servers: [
                 {
-                    url: url,
-                },
+                    url: url
+                }
             ],
             components: {
                 securitySchemes: {
@@ -31,25 +31,22 @@ export const createSwaggerDocs = (url) => {
                 },
                 schemas: {
                     ...moviesSwagger.components.schemas,
-                    ...userSwagger.components.schemas,
-                },
-
-
+                    ...userSwagger.components.schemas
+                }
             },
             paths: {
                 ...moviesSwagger.paths,
                 ...authSwagger.paths,
-                ...userSwagger.paths,
+                ...userSwagger.paths
             },
             security: [
                 {
-                    ApiKeyAuth: [],
-                },
-            ],
+                    ApiKeyAuth: []
+                }
+            ]
         },
-        apis: [], // files containing annotations as above
+        apis: [] // files containing annotations as above
     }
 
-    return swaggerJsDoc(swaggerOptions);
+    return swaggerJsDoc(swaggerOptions)
 }
-

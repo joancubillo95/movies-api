@@ -1,54 +1,57 @@
 {
-  "name": "movies-api",
-  "version": "1.0.4",
-  "description": "A Node.js REST API for managing movies with PostgreSQL and SQL Server, JWT authentication, Docker and automated releases.",
-  "keywords": [
-    "api",
-    "nodejs",
-    "docker",
-    "kubernetes",
-    "azure",
-    "sql"
-  ],
-  "homepage": "https://github.com/joancubillo95/movies-api#readme",
-  "bugs": {
-    "url": "https://github.com/joancubillo95/movies-api/issues"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/joancubillo95/movies-api.git"
-  },
-  "license": "MIT",
-  "author": "Joan Cubillo",
-  "type": "module",
-  "main": "src/app.js",
-  "scripts": {
-    "dev:mssql": "nodemon src/server/mssqlServer.js",
-    "dev:pg": "nodemon src/server/pgServer.js",
-    "start": "node src/server/pgServer.js",
-    "test": "vitest"
-  },
-  "dependencies": {
-    "bcrypt": "6.0.0",
-    "cookie-parser": "1.4.7",
-    "cors": "2.8.6",
-    "dotenv": "17.4.2",
-    "express": "^5.2.1",
-    "express-rate-limit": "8.5.2",
-    "jsonwebtoken": "9.0.3",
-    "mssql": "12.5.5",
-    "pg": "8.22.0",
-    "swagger-jsdoc": "6.3.0",
-    "swagger-ui-express": "^5.0.1",
-    "yaml": "^2.9.0",
-    "zod": "4.6.7"
-  },
-  "devDependencies": {
-    "@vitest/coverage-v8": "5.0.5",
-    "nodemon": "3.1.14",
-    "vitest": "5.0.5",
-    "@semantic-release/changelog": "^6.0.3",
-    "@semantic-release/git": "^10.0.1",
-    "semantic-release": "^25.0.9"
-  }
+    "name": "movies-api",
+    "version": "1.0.4",
+    "description": "A Node.js REST API for managing movies with PostgreSQL and SQL Server, JWT authentication, Docker and automated releases.",
+    "keywords": [
+        "api",
+        "nodejs",
+        "docker",
+        "kubernetes",
+        "azure",
+        "sql"
+    ],
+    "homepage": "https://github.com/joancubillo95/movies-api#readme",
+    "bugs": {
+        "url": "https://github.com/joancubillo95/movies-api/issues"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/joancubillo95/movies-api.git"
+    },
+    "license": "MIT",
+    "author": "Joan Cubillo",
+    "type": "module",
+    "main": "src/app.js",
+    "scripts": {
+        "dev:mssql": "nodemon src/server/mssqlServer.js",
+        "dev:pg": "nodemon src/server/pgServer.js",
+        "start": "node src/server/pgServer.js",
+        "test": "vitest",
+        "format": "prettier --write .",
+        "format:check": "prettier --check ."
+    },
+    "dependencies": {
+        "bcrypt": "6.0.0",
+        "cookie-parser": "1.4.7",
+        "cors": "2.8.6",
+        "dotenv": "17.4.2",
+        "express": "^5.2.1",
+        "express-rate-limit": "8.5.2",
+        "jsonwebtoken": "9.0.3",
+        "mssql": "12.5.5",
+        "pg": "8.22.0",
+        "swagger-jsdoc": "6.3.0",
+        "swagger-ui-express": "^5.0.1",
+        "yaml": "^2.9.0",
+        "zod": "4.6.7"
+    },
+    "devDependencies": {
+        "@semantic-release/changelog": "^6.0.3",
+        "@semantic-release/git": "^10.0.1",
+        "@vitest/coverage-v8": "5.0.5",
+        "nodemon": "3.1.14",
+        "prettier": "^3.10.1",
+        "semantic-release": "^25.0.9",
+        "vitest": "5.0.5"
+    }
 }
