@@ -13,6 +13,13 @@ export class MssqlErrorMapper {
             )
         }
         switch (error.number) {
+            case 515:
+                return new AppError(
+                    "A required field was missing",
+                    400,
+                    error
+                )
+
             case 547:
                 return new AppError(
                     "This record is linked to another and cannot be deleted",
