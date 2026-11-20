@@ -32,4 +32,5 @@ CREATE TABLE MOVIE_GENRES (
 );
 
 INSERT INTO GENRE (NAME) VALUES
-('Drama'), ('Action'), ('Crime'), ('Adventure'), ('Sci-Fi'), ('Romance');
+('Drama'), ('Action'), ('Crime'), ('Adventure'), ('Sci-Fi'), ('Romance'),
+('Comedy'), ('Fantasy'), ('Horror'), ('Thriller');
