@@ -35,6 +35,9 @@ jobs:
       - name: Test with coverage
         run: npm test -- --coverage
 
+      - name: Build Docker image
+        run: docker build --tag movies-api:ci .
+
       - name: Upload coverage report
         if: always()
         uses: actions/upload-artifact@v6
