@@ -1,9 +1,15 @@
+import { JWT_REFRESH, JWT_SECRET } from "../config/env.js"
+
 import { AppError } from "../utils/appError.js"
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
 
-export class LoginService {
+const DUMMY_PASSWORD_HASH = bcrypt.hashSync(
+    crypto.randomBytes(32).toString("hex"),
+    10
+)
 
+export class LoginService {
     constructor(usersRepository) {
         this.usersRepository = usersRepository
     }
@@ -15,8 +21,9 @@ export class LoginService {
     validateLogin = async (username, pass) => {
         try {
             const user = await this.usersRepository.login({ username })
-            const passMatch = await this.validatePassword(pass, user.password_hash)
-            if (!passMatch) {
+            const passHash = user?.password_hash ?? DUMMY_PASSWORD_HASH
+            const passMatch = await this.validatePassword(pass, passHash)
+            if (!user || !passMatch) {
                 throw new Error("Invalid login attempt")
             }
 
@@ -35,8 +42,8 @@ export class LoginService {
                 username: user.username,
                 role: user.role
             },
-            process.env.JWT_SECRET,
-            { expiresIn: "10m" }
+            JWT_SECRET,
+            { expiresIn: "30m" }
         );
     }
 
@@ -45,15 +52,15 @@ export class LoginService {
             {
                 id: user.id
             },
-            process.env.JWT_SECRET,
-            { expiresIn: "1d" }
+            JWT_REFRESH,
+            { expiresIn: "24h" }
         );
     }
 
     refreshLogin = async (refreshToken) => {
         let payload
         try {
-            payload = jwt.verify(refreshToken, process.env.JWT_SECRET)
+            payload = jwt.verify(refreshToken, JWT_REFRESH)
         } catch (error) {
             throw new AppError("Invalid refresh token", 401, error)
         }
