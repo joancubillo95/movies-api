@@ -1,6 +1,9 @@
 node_modules/
+npm-debug.log
 .git
+.github
 *.log
 .env
 .env.*
 !.env.example
+coverage
