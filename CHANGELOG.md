@@ -1,3 +1,12 @@
+## [1.2.4](https://github.com/joancubillo95/movies-api/compare/v1.2.3...v1.2.4) (2026-11-26)
+
+
+### Bug Fixes
+
+* fix major cves ([63cf080](https://github.com/joancubillo95/movies-api/commit/63cf080b5352a24d8cfec4d5e77f04f7240a1166))
+* separate access and refresh token identities ([5fab19f](https://github.com/joancubillo95/movies-api/commit/5fab19f2359a655868c0f0fa8c46a813020504e2))
+* separate access and refresh token identities ([0818959](https://github.com/joancubillo95/movies-api/commit/0818959b8654d86da944bbc819075ac740e3dbb7))
+
 ## [1.2.3](https://github.com/joancubillo95/movies-api/compare/v1.2.2...v1.2.3) (2026-11-26)
 
 
