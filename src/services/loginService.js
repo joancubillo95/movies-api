@@ -4,11 +4,6 @@ import { AppError } from "../utils/appError.js"
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
 
-const DUMMY_PASSWORD_HASH = bcrypt.hashSync(
-    crypto.randomBytes(32).toString("hex"),
-    10
-)
-
 export class LoginService {
     constructor(usersRepository) {
         this.usersRepository = usersRepository
@@ -21,8 +16,8 @@ export class LoginService {
     validateLogin = async (username, pass) => {
         try {
             const user = await this.usersRepository.login({ username })
-            const passHash = user?.password_hash ?? DUMMY_PASSWORD_HASH
-            const passMatch = await this.validatePassword(pass, passHash)
+            const passHash = user?.password_hash
+            const passMatch = passHash ? await this.validatePassword(pass, passHash) : false
             if (!user || !passMatch) {
                 throw new Error("Invalid login attempt")
             }
