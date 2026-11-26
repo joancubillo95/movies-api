@@ -1,7 +1,7 @@
-DROP DATABASE IF EXISTS moviesdb;
-CREATE DATABASE moviesdb;
+-- Run this script against the database configured in DB_DATABASE.
+-- It creates objects only when they are absent and never drops or recreates the database.
 
-CREATE TABLE movie (
+CREATE TABLE IF NOT EXISTS movie (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     title VARCHAR(255) UNIQUE NOT NULL,
     year INT NOT NULL,
@@ -12,24 +12,25 @@ CREATE TABLE movie (
 );
 
 
-CREATE TABLE genre (
+CREATE TABLE IF NOT EXISTS genre (
     id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     name VARCHAR(255) UNIQUE NOT NULL
 );
 
-CREATE TABLE MOVIE_GENRES (
-    MOVIE_ID UUID,
-    GENRE_ID INT,
-    PRIMARY KEY (MOVIE_ID, GENRE_ID),
+CREATE TABLE IF NOT EXISTS movie_genres (
+    movie_id UUID,
+    genre_id INT,
+    PRIMARY KEY (movie_id, genre_id),
 
-    CONSTRAINT FK_MOVIEGENRES_MOVIE FOREIGN KEY (MOVIE_ID)
-        REFERENCES MOVIE(ID) ON DELETE CASCADE,
+    CONSTRAINT fk_moviegenres_movie FOREIGN KEY (movie_id)
+        REFERENCES movie(id) ON DELETE CASCADE,
 
-    CONSTRAINT FK_MOVIEGENRES_GENRE FOREIGN KEY (GENRE_ID)
-        REFERENCES GENRE(ID)
+    CONSTRAINT fk_moviegenres_genre FOREIGN KEY (genre_id)
+        REFERENCES genre(id)
 );
 
 
-INSERT INTO GENRE (NAME) VALUES
-('Drama'), ('Action'), ('Crime'), ('Adventure'), ('Sci-Fi'), ('Romance'),
-('Comedy'), ('Fantasy'), ('Horror'), ('Thriller');
+INSERT INTO genre (name) VALUES
+    ('Drama'), ('Action'), ('Crime'), ('Adventure'), ('Sci-Fi'), ('Romance'),
+    ('Comedy'), ('Fantasy'), ('Horror'), ('Thriller')
+ON CONFLICT (name) DO NOTHING;

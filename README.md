@@ -90,7 +90,9 @@ Environment variables (also listed in `.env.example`):
 | `NODE_ENV` | No | Error handling | `development` (default) or `production` |
 
 ## Database Initialization
-Run the SQL scripts in order for your chosen backend.
+Create the database named by `DB_DATABASE` if it does not exist, then connect to **that database** and run the scripts below in order for your chosen backend.
+
+The scripts are non-destructive and idempotent: they do not drop or recreate the database, tables are created only when absent, and the genre seed inserts only missing rows. Views and stored procedures are replaced.
 
 **PostgreSQL** — files in `db/postgres/`:
 1. `001_schema.sql`
@@ -311,7 +313,7 @@ Run `npx vitest run --coverage` for current results. Tests live in:
 - Rotate `API_KEY` and `JWT_SECRET` in production.
 - `JWT_SECRET` is validated as a non-empty string at startup.
 - The refresh cookie is marked `secure`, so it requires HTTPS.
-- Consider a migration tool (Flyway, Knex, etc.) instead of raw SQL scripts for production deployments.
+- For production, prefer a versioned migration tool (Flyway, Knex, etc.). The SQL scripts here are an idempotent baseline, not a migration history or rollback mechanism.
 
 ## Known Limitations
 This is a portfolio project, not a production-ready deployment. Current gaps:
