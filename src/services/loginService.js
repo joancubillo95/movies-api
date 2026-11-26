@@ -1,8 +1,8 @@
+import { ACCESS_TOKEN, REFRESH_TOKEN, signToken, verifyToken } from "../utils/jwtHelper.js"
 import { JWT_REFRESH, JWT_SECRET } from "../config/env.js"
 
 import { AppError } from "../utils/appError.js"
 import bcrypt from "bcrypt"
-import jwt from "jsonwebtoken"
 
 export class LoginService {
     constructor(usersRepository) {
@@ -30,32 +30,34 @@ export class LoginService {
         }
     }
 
-    generateToken = (user) => {
-        return jwt.sign(
-            {
-                id: user.id,
-                username: user.username,
-                role: user.role
-            },
-            JWT_SECRET,
-            { expiresIn: "30m" }
-        );
-    }
+    generateToken = ({ id, username, role }) => signToken({
+        payload: {
+            id,
+            username,
+            role
+        },
+        secret: JWT_SECRET,
+        type: ACCESS_TOKEN,
+        expiresIn: "30m"
+    })
 
-    generateRefreshToken = (user) => {
-        return jwt.sign(
-            {
-                id: user.id
-            },
-            JWT_REFRESH,
-            { expiresIn: "24h" }
-        );
-    }
+    generateRefreshToken = ({ id }) => signToken({
+        payload: {
+            id
+        },
+        secret: JWT_REFRESH,
+        type: REFRESH_TOKEN,
+        expiresIn: "24h"
+    })
 
     refreshLogin = async (refreshToken) => {
         let payload
         try {
-            payload = jwt.verify(refreshToken, JWT_REFRESH)
+            payload = verifyToken({
+                token: refreshToken,
+                secret: JWT_REFRESH,
+                expectedType: REFRESH_TOKEN
+            })
         } catch (error) {
             throw new AppError("Invalid refresh token", 401, error)
         }
@@ -66,5 +68,3 @@ export class LoginService {
         return { token: this.generateToken(user), user }
     }
 }
-
-

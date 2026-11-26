@@ -8,9 +8,14 @@ const envSchema = z.object({
     PORT: z.coerce.number().int().positive().nonoptional(),
     API_KEY: z.string().min(1),
     DB_DRIVER: z.enum(["mssql", "postgres"]),
-    JWT_SECRET: z.string().min(10),
-    JWT_REFRESH: z.string().min(10)
-})
+    JWT_SECRET: z.string().min(32),
+    JWT_REFRESH: z.string().min(32)
+}).refine((JWT_SECRET, JWT_REFRESH) => JWT_SECRET !== JWT_REFRESH,
+    {
+        message: "JWT_SECRET and JWT_REFRESH must be different values",
+        path: ["JWT_REFRESH"]
+    }
+)
 
 const env = envSchema.parse(process.env)
 
