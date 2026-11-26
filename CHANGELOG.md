@@ -1,3 +1,12 @@
+## [1.2.1](https://github.com/joancubillo95/movies-api/compare/v1.2.0...v1.2.1) (2026-11-26)
+
+
+### Bug Fixes
+
+* refresh token ([#26](https://github.com/joancubillo95/movies-api/issues/26)) ([e6f35d3](https://github.com/joancubillo95/movies-api/commit/e6f35d3e2a760c6af7924da9b0d46b8049a75bfb))
+* remove dummy hash ([4f2ec71](https://github.com/joancubillo95/movies-api/commit/4f2ec717b5bbf7306c12f49bef155fa7900d8df5))
+* remove dummy hash ([8e8f3c6](https://github.com/joancubillo95/movies-api/commit/8e8f3c63af2e42bfa3c3e81c30e4bd92670c2a60))
+
 # [1.2.0](https://github.com/joancubillo95/movies-api/compare/v1.1.0...v1.2.0) (2026-11-26)
 
 
