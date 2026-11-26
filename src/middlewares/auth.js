@@ -1,5 +1,6 @@
+import { ACCESS_TOKEN, verifyToken } from "../utils/jwtHelper.js";
+
 import { JWT_SECRET } from "../config/env.js";
-import jwt from "jsonwebtoken"
 
 export function authenticateJWT(req, res, next) {
     const authHeader = req.headers.authorization;
@@ -13,7 +14,11 @@ export function authenticateJWT(req, res, next) {
     const token = authHeader.split(" ")[1];
 
     try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const decoded = verifyToken({
+            token,
+            secret: JWT_SECRET,
+            expectedType: ACCESS_TOKEN
+        });
 
         req.user = decoded;
 
