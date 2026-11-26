@@ -1,3 +1,12 @@
+## [1.2.3](https://github.com/joancubillo95/movies-api/compare/v1.2.2...v1.2.3) (2026-11-26)
+
+
+### Bug Fixes
+
+* fix major cves ([c32ef52](https://github.com/joancubillo95/movies-api/commit/c32ef52d87a78a297e8d134ee5e2d7eba1343162))
+* major cves ([561ef81](https://github.com/joancubillo95/movies-api/commit/561ef81c5b21ee01853fd7c93e79e086c66028f1))
+* make database initialization non-destructive ([2d5048c](https://github.com/joancubillo95/movies-api/commit/2d5048cdfd856f754caf35b6a87b3681a547fed3))
+
 ## [1.2.2](https://github.com/joancubillo95/movies-api/compare/v1.2.1...v1.2.2) (2026-11-26)
 
 

@@ -1,6 +1,6 @@
 {
   "name": "movies-api",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "description": "A Node.js REST API for managing movies with PostgreSQL and SQL Server, JWT authentication, Docker and automated releases.",
   "keywords": [
     "api",
