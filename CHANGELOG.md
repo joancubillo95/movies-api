@@ -1,3 +1,17 @@
+# [1.2.0](https://github.com/joancubillo95/movies-api/compare/v1.1.0...v1.2.0) (2026-11-26)
+
+
+### Bug Fixes
+
+* refresh token ([#27](https://github.com/joancubillo95/movies-api/issues/27)) ([c36fe8c](https://github.com/joancubillo95/movies-api/commit/c36fe8cd1618552396d97d03da00dc78e7bd6a47))
+
+
+### Features
+
+* ci optimization ([#32](https://github.com/joancubillo95/movies-api/issues/32)) ([e77725c](https://github.com/joancubillo95/movies-api/commit/e77725c151ae2000f858f5294b37137d83d8fa4e))
+* refine ci GitHub Actions workflow ([a2353f2](https://github.com/joancubillo95/movies-api/commit/a2353f275a5e658dc08b83b7743f15b2e4f6e2e8))
+* update ci workflow ([ca60852](https://github.com/joancubillo95/movies-api/commit/ca6085246b52cf4bec25f6fe15bc00784bf36afe))
+
 # [1.1.0](https://github.com/joancubillo95/movies-api/compare/v1.0.5...v1.1.0) (2026-11-20)
 
 
