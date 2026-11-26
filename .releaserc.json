@@ -39,7 +39,7 @@
                     "CHANGELOG.md",
                     "README.md"
                 ],
-                "message": "chore(release): ${nextRelease.version} [skip ci]"
+                "message": "chore(release): ${nextRelease.version}"
             }
         ],
         "@semantic-release/github"
