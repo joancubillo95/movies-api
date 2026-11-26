@@ -1,3 +1,12 @@
+## [1.2.2](https://github.com/joancubillo95/movies-api/compare/v1.2.1...v1.2.2) (2026-11-26)
+
+
+### Bug Fixes
+
+* db initialization ([964afe1](https://github.com/joancubillo95/movies-api/commit/964afe19ed92736f2ae1b93a5d0f05d7c703a1f5))
+* make database initialization non-destructive ([8f95c4c](https://github.com/joancubillo95/movies-api/commit/8f95c4cf07054e460df2a14171fee15051401a63))
+* remove dummy hash ([f795158](https://github.com/joancubillo95/movies-api/commit/f795158e838c1eddd384cfc7d625ab163c384031))
+
 ## [1.2.1](https://github.com/joancubillo95/movies-api/compare/v1.2.0...v1.2.1) (2026-11-26)
 
 
